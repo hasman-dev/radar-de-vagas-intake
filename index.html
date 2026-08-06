@@ -1,0 +1,1011 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Radar de Vagas — Cadastro</title>
+<meta name="description" content="Cadastro do Radar de Vagas: as respostas aqui calibram a busca automática de vagas feita para você.">
+<meta name="color-scheme" content="light dark">
+<style>
+  :root{
+    --bg:#f6f7f9; --card:#ffffff; --fg:#14181f; --muted:#5b6472; --line:#e2e6ec;
+    --accent:#1f6feb; --accent-fg:#ffffff; --accent-soft:#e8f0fe;
+    --ok:#127a4b; --ok-soft:#e4f5ec; --warn:#8a5300; --warn-soft:#fdf1dc;
+    --radius:14px; --shadow:0 1px 2px rgba(16,24,40,.06),0 8px 24px rgba(16,24,40,.06);
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#0e1116; --card:#161b22; --fg:#e6edf3; --muted:#9aa5b1; --line:#262d36;
+      --accent:#4d90ff; --accent-fg:#08111f; --accent-soft:#16243d;
+      --ok:#4ad295; --ok-soft:#10261c; --warn:#e5b567; --warn-soft:#2a2113;
+      --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.3);
+    }
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg); color:var(--fg);
+    font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    -webkit-font-smoothing:antialiased; padding:0 0 96px;
+  }
+  .wrap{max-width:680px;margin:0 auto;padding:0 18px}
+
+  header.top{
+    position:sticky;top:0;z-index:20;background:var(--bg);
+    border-bottom:1px solid var(--line);padding:14px 0 10px;
+  }
+  .brand{display:flex;align-items:center;gap:10px;font-weight:650;letter-spacing:-.01em}
+  .dot{width:10px;height:10px;border-radius:50%;background:var(--accent);
+       box-shadow:0 0 0 4px var(--accent-soft);flex:none}
+  .brand small{font-weight:450;color:var(--muted);margin-left:auto;font-size:13px}
+  .bar{height:4px;background:var(--line);border-radius:99px;margin-top:12px;overflow:hidden}
+  .bar > i{display:block;height:100%;width:0;background:var(--accent);
+           border-radius:99px;transition:width .35s cubic-bezier(.4,0,.2,1)}
+
+  main{padding-top:26px}
+  .step{display:none;animation:in .3s ease}
+  .step.on{display:block}
+  @keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  .eyebrow{font-size:13px;font-weight:600;color:var(--accent);letter-spacing:.02em;
+           text-transform:uppercase;margin:0 0 6px}
+  h1{font-size:26px;line-height:1.25;letter-spacing:-.02em;margin:0 0 10px}
+  h2{font-size:16px;margin:26px 0 10px;letter-spacing:-.01em}
+  p.lead{color:var(--muted);margin:0 0 22px}
+  p.hint{color:var(--muted);font-size:14px;margin:6px 0 0}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+        padding:18px;box-shadow:var(--shadow);margin-bottom:14px}
+
+  label.f{display:block;margin:0 0 14px}
+  label.f > span{display:block;font-size:14px;font-weight:600;margin-bottom:6px}
+  label.f > span em{font-style:normal;font-weight:450;color:var(--muted)}
+  input[type=text],input[type=email],input[type=tel],input[type=url],select,textarea{
+    width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:10px;
+    background:var(--bg);color:var(--fg);font:inherit;font-size:16px;
+  }
+  textarea{resize:vertical;min-height:96px;line-height:1.5}
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
+  .row{display:flex;gap:12px;flex-wrap:wrap}
+  .row > *{flex:1 1 200px;min-width:0}
+
+  .opt{display:flex;gap:11px;align-items:flex-start;padding:12px 14px;border:1px solid var(--line);
+       border-radius:11px;margin-bottom:8px;cursor:pointer;background:var(--card);transition:.15s}
+  .opt:hover{border-color:var(--accent)}
+  .opt input{margin:2px 0 0;accent-color:var(--accent);width:18px;height:18px;flex:none}
+  .opt b{display:block;font-size:15px;font-weight:600}
+  .opt small{color:var(--muted);font-size:13.5px;display:block;margin-top:2px}
+  .opt.sel{border-color:var(--accent);background:var(--accent-soft)}
+
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{border:1px solid var(--line);background:var(--card);color:var(--fg);
+        padding:8px 13px;border-radius:99px;font-size:14px;cursor:pointer;transition:.15s;font-family:inherit}
+  .chip:hover{border-color:var(--accent)}
+  .chip[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--accent-fg);font-weight:600}
+
+  .cargo{border:1px solid var(--line);border-radius:11px;padding:14px;margin-bottom:10px;background:var(--card)}
+  .cargo .t{font-weight:650;font-size:16px;margin-bottom:2px}
+  .cargo .por{color:var(--muted);font-size:14px;margin-bottom:10px}
+  .cargo .acts{display:flex;gap:8px}
+  .cargo.no{opacity:.5}
+
+  .nav{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);
+       padding:12px 18px calc(12px + env(safe-area-inset-bottom));z-index:30}
+  .nav .wrap{display:flex;gap:10px;align-items:center;padding:0 18px}
+  button{font:inherit;font-size:15px;font-weight:600;border-radius:10px;padding:12px 20px;
+         border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;transition:.15s}
+  button:hover{border-color:var(--accent)}
+  button.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-fg);flex:1}
+  button.primary:hover{filter:brightness(1.08)}
+  button:disabled{opacity:.5;cursor:not-allowed}
+  button.ghost{padding:12px 16px}
+  .nav small{color:var(--muted);font-size:13px;margin-left:auto;white-space:nowrap}
+
+  .note{border-left:3px solid var(--accent);background:var(--accent-soft);padding:12px 14px;
+        border-radius:0 10px 10px 0;font-size:14.5px;margin:0 0 18px}
+  .note.warn{border-color:var(--warn);background:var(--warn-soft)}
+  .note.ok{border-color:var(--ok);background:var(--ok-soft)}
+  .err{color:#b42318;font-size:14px;margin-top:8px;font-weight:500}
+  @media (prefers-color-scheme:dark){.err{color:#ff8a80}}
+
+  .add{display:flex;gap:8px;margin-top:8px}
+  .add input{flex:1}
+  .add button{padding:11px 16px;flex:none}
+  ul.list{list-style:none;padding:0;margin:10px 0 0;display:flex;flex-direction:column;gap:6px}
+  ul.list li{display:flex;align-items:center;gap:10px;background:var(--bg);border:1px solid var(--line);
+             border-radius:9px;padding:9px 12px;font-size:15px}
+  ul.list li button{margin-left:auto;padding:2px 9px;font-size:18px;line-height:1;border:none;
+                    background:none;color:var(--muted);font-weight:400}
+  ul.list li button:hover{color:#b42318}
+
+  .cond{margin-top:10px;padding-left:14px;border-left:2px solid var(--line)}
+  .done{text-align:center;padding:30px 0}
+  .done .big{font-size:46px;line-height:1;margin-bottom:14px}
+  .proto{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:19px;font-weight:650;
+         background:var(--bg);border:1px dashed var(--line);border-radius:10px;padding:12px;margin:14px 0}
+  .acts-final{display:flex;flex-direction:column;gap:9px;margin-top:20px}
+  .acts-final button,.acts-final a{width:100%;text-align:center;text-decoration:none;display:block}
+  .acts-final a{padding:12px 20px;border-radius:10px;border:1px solid var(--line);
+                background:var(--card);color:var(--fg);font-weight:600;font-size:15px}
+  footer{color:var(--muted);font-size:12.5px;text-align:center;padding:24px 18px 0;line-height:1.6}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand"><span class="dot"></span> Radar de Vagas <small id="passo">1 / 10</small></div>
+    <div class="bar"><i id="prog"></i></div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- 1 ─────────────────────────────────────────────── abertura -->
+  <section class="step on" data-step="0">
+    <p class="eyebrow">Antes de começar</p>
+    <h1 id="ola">Vamos calibrar a sua busca</h1>
+    <p class="lead">A partir daqui, um robô varre os portais de vaga todo dia procurando
+      o que se encaixa em você — e te manda só o que passa no filtro, com uma explicação
+      de por que passou.</p>
+
+    <div class="card">
+      <h2 style="margin-top:0">O que acontece depois que você enviar</h2>
+      <p style="margin:0 0 10px"><b>1.</b> Eu leio suas respostas e monto o seu perfil de busca.</p>
+      <p style="margin:0 0 10px"><b>2.</b> A primeira rodada roda em até 24h e cria a sua planilha de acompanhamento.</p>
+      <p style="margin:0 0 10px"><b>3.</b> Toda vaga nova chega no seu celular com três botões:
+        <b>boa</b>, <b>não era pra vir</b> e <b>não vou seguir</b>.</p>
+      <p style="margin:0"><b>4.</b> Cada clique seu recalibra o filtro. Em duas semanas o radar
+        é seu, não meu.</p>
+    </div>
+
+    <div class="note">Leva de 6 a 10 minutos. Pode fechar e voltar depois —
+      as respostas ficam salvas neste navegador.</div>
+  </section>
+
+  <!-- 2 ─────────────────────────────────────────────── quem é você -->
+  <section class="step" data-step="1">
+    <p class="eyebrow">Etapa 1</p>
+    <h1>Quem é você</h1>
+    <p class="lead">O WhatsApp é por onde as vagas chegam. O LinkedIn é de onde eu tiro
+      o contexto que o currículo não conta.</p>
+
+    <div class="card">
+      <label class="f"><span>Nome completo</span>
+        <input type="text" id="nome" autocomplete="name" placeholder="Maria Silva"></label>
+      <div class="row">
+        <label class="f"><span>E-mail</span>
+          <input type="email" id="email" autocomplete="email" placeholder="voce@email.com"></label>
+        <label class="f"><span>WhatsApp <em>com DDD</em></span>
+          <input type="tel" id="whatsapp" autocomplete="tel" placeholder="(11) 90000-0000"></label>
+      </div>
+      <label class="f"><span>LinkedIn</span>
+        <input type="text" id="linkedin" placeholder="linkedin.com/in/seu-perfil"></label>
+      <div class="row">
+        <label class="f"><span>Cidade onde mora</span>
+          <input type="text" id="cidade" placeholder="São Paulo"></label>
+        <label class="f" style="flex:0 1 120px"><span>UF</span>
+          <input type="text" id="uf" maxlength="2" placeholder="SP" style="text-transform:uppercase"></label>
+      </div>
+    </div>
+
+    <h2>Como está sua situação hoje?</h2>
+    <p class="hint" style="margin-bottom:10px">Isso define o ritmo da busca — quem está fora
+      recebe rodada diária e corte mais aberto.</p>
+    <div id="situacao"></div>
+    <div class="err" id="e1"></div>
+  </section>
+
+  <!-- 3 ─────────────────────────────────────────────── currículo -->
+  <section class="step" data-step="2">
+    <p class="eyebrow">Etapa 2</p>
+    <h1>Seu currículo</h1>
+    <p class="lead">É daqui que saem os cargos que vou sugerir na próxima etapa —
+      principalmente dos seus dois últimos empregos.</p>
+
+    <div class="card">
+      <label class="f"><span>Cole o texto do seu currículo <em>ou envie o PDF depois</em></span>
+        <textarea id="cv_texto" rows="8" placeholder="Abra o PDF, selecione tudo (Ctrl+A), copie e cole aqui.
+Não precisa formatar — só o texto já serve."></textarea></label>
+      <label class="opt" style="margin-bottom:0">
+        <input type="checkbox" id="cv_whats">
+        <span><b>Prefiro mandar o PDF no WhatsApp</b>
+          <small>Você recebe o número na tela final.</small></span></label>
+    </div>
+
+    <h2>Seus dois últimos empregos</h2>
+    <p class="hint" style="margin-bottom:12px">O peso maior da análise está aqui. Se estiver
+      no primeiro emprego, preencha só o primeiro bloco.</p>
+
+    <div class="card">
+      <p style="margin:0 0 12px;font-size:13px;font-weight:700;color:var(--muted);
+                letter-spacing:.04em;text-transform:uppercase">Emprego atual ou mais recente</p>
+      <div class="row">
+        <label class="f"><span>Empresa</span><input type="text" id="e1_empresa"></label>
+        <label class="f"><span>Cargo</span><input type="text" id="e1_cargo"></label>
+      </div>
+      <label class="f" style="margin-bottom:0"><span>Período <em>ex.: 07/2017 – 02/2026</em></span>
+        <input type="text" id="e1_periodo"></label>
+    </div>
+
+    <div class="card">
+      <p style="margin:0 0 12px;font-size:13px;font-weight:700;color:var(--muted);
+                letter-spacing:.04em;text-transform:uppercase">Emprego anterior</p>
+      <div class="row">
+        <label class="f"><span>Empresa</span><input type="text" id="e2_empresa"></label>
+        <label class="f"><span>Cargo</span><input type="text" id="e2_cargo"></label>
+      </div>
+      <label class="f" style="margin-bottom:0"><span>Período</span>
+        <input type="text" id="e2_periodo"></label>
+    </div>
+
+    <label class="f"><span>Anos de experiência somando tudo</span>
+      <input type="text" id="anos" inputmode="numeric" placeholder="13" style="max-width:140px"></label>
+    <div class="err" id="e2"></div>
+  </section>
+
+  <!-- 4 ─────────────────────────────────────────────── cargos -->
+  <section class="step" data-step="3">
+    <p class="eyebrow">Etapa 3</p>
+    <h1>Os cargos que vamos buscar</h1>
+    <p class="lead" id="cargos_lead">Estes são os três cargos que melhor se encaixam no seu
+      histórico. Recuse o que não fizer sentido e acrescente o que faltar.</p>
+
+    <div id="sugeridos"></div>
+
+    <div class="card">
+      <h2 style="margin-top:0">Quer incluir outros títulos na busca?</h2>
+      <p class="hint" style="margin:0 0 10px">Escreva exatamente como aparece nos anúncios.
+        Cada título vira uma consulta separada nos portais.</p>
+      <div class="add">
+        <input type="text" id="cargo_novo" placeholder="ex.: Product Owner"
+               onkeydown="if(event.key==='Enter'){event.preventDefault();addCargo()}">
+        <button type="button" onclick="addCargo()">Adicionar</button>
+      </div>
+      <ul class="list" id="cargos_extra"></ul>
+    </div>
+    <div class="err" id="e3"></div>
+  </section>
+
+  <!-- 5 ─────────────────────────────────────────────── senioridade -->
+  <section class="step" data-step="4">
+    <p class="eyebrow">Etapa 4</p>
+    <h1>Que senioridade você busca</h1>
+    <p class="lead">Pode marcar mais de uma. Tudo que ficar de fora é descartado no filtro,
+      então prefira marcar a mais.</p>
+    <div id="senioridade"></div>
+    <div class="err" id="e4"></div>
+  </section>
+
+  <!-- 6 ─────────────────────────────────────────────── movimento -->
+  <section class="step" data-step="5">
+    <p class="eyebrow">Etapa 5</p>
+    <h1>Que movimento é esse</h1>
+    <p class="lead">Muda completamente o que conta como vaga boa: transição aceita cargo
+      lateral, degrau acima descarta o que você já faz hoje.</p>
+    <div id="movimento"></div>
+
+    <div id="mov_transicao" class="cond" hidden>
+      <div class="row">
+        <label class="f"><span>Saindo de</span>
+          <input type="text" id="mov_de" placeholder="ex.: Supervisor de Processos"></label>
+        <label class="f"><span>Indo para</span>
+          <input type="text" id="mov_para" placeholder="ex.: Product Manager"></label>
+      </div>
+      <label class="f"><span>O que da sua experiência sustenta essa transição? <em>opcional</em></span>
+        <textarea id="mov_obs" rows="3" placeholder="O que você já fez que se parece com o cargo novo."></textarea></label>
+    </div>
+    <div class="err" id="e5"></div>
+  </section>
+
+  <!-- 7 ─────────────────────────────────────────────── modalidade -->
+  <section class="step" data-step="6">
+    <p class="eyebrow">Etapa 6</p>
+    <h1>Como e onde você trabalha</h1>
+    <p class="lead">Marque as modalidades que aceita. Para cada uma, diga até onde vai
+      geograficamente — presencial costuma ser bem mais restrito que remoto.</p>
+
+    <div id="modalidades"></div>
+
+    <div class="card" id="abrangencias" hidden>
+      <h2 style="margin-top:0">Até onde você aceita, em cada uma</h2>
+      <div id="abr_campos"></div>
+    </div>
+
+    <h2>Mudaria de cidade por uma vaga certa?</h2>
+    <div id="mudanca"></div>
+    <div class="err" id="e6"></div>
+  </section>
+
+  <!-- 8 ─────────────────────────────────────────────── empresas alvo -->
+  <section class="step" data-step="7">
+    <p class="eyebrow">Etapa 7</p>
+    <h1>Onde você quer trabalhar</h1>
+    <p class="lead">As empresas que você listar aqui ganham tratamento especial: o robô lê o
+      site de carreiras delas direto, e pega a vaga antes de ela chegar nos portais.</p>
+
+    <div class="card">
+      <h2 style="margin-top:0">Empresas-alvo</h2>
+      <p class="hint" style="margin:0 0 10px">Uma por linha, ou separadas por vírgula.
+        Não precisa ter vaga aberta hoje.</p>
+      <textarea id="empresas_alvo" rows="5"
+        placeholder="Mercado Pago&#10;TOTVS&#10;Stone&#10;Nubank"></textarea>
+    </div>
+
+    <div class="card">
+      <h2 style="margin-top:0">Segmentos que te interessam</h2>
+      <p class="hint" style="margin:0 0 12px">Amplia a busca para empresas que você nem conhece
+        ainda, mas que jogam o mesmo jogo.</p>
+      <div class="chips" id="segmentos"></div>
+      <div class="add" style="margin-top:12px">
+        <input type="text" id="seg_novo" placeholder="Outro segmento"
+               onkeydown="if(event.key==='Enter'){event.preventDefault();addSeg()}">
+        <button type="button" onclick="addSeg()">Adicionar</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 style="margin-top:0">Porte de empresa</h2>
+      <p class="hint" style="margin:0 0 12px">Opcional. Deixe em branco se tanto faz.</p>
+      <div class="chips" id="porte"></div>
+    </div>
+  </section>
+
+  <!-- 9 ─────────────────────────────────────────────── evitar -->
+  <section class="step" data-step="8">
+    <p class="eyebrow">Etapa 8</p>
+    <h1>O que não deve chegar até você</h1>
+    <p class="lead">Esta é a etapa que mais melhora a qualidade da lista. Vaga filtrada aqui
+      nunca ocupa espaço no seu dia.</p>
+
+    <div class="card">
+      <h2 style="margin-top:0">Empresas a evitar</h2>
+      <p class="hint" style="margin:0 0 10px">Uma por linha. Concorrente com cláusula,
+        ex-empregador, consultoria que você não quer — o motivo é opcional e fica só comigo.</p>
+      <textarea id="empresas_evitar" rows="4" placeholder="Empresa X — cláusula de não concorrência"></textarea>
+    </div>
+
+    <div class="card">
+      <h2 style="margin-top:0">Palavras que descartam a vaga na hora</h2>
+      <p class="hint" style="margin:0 0 10px">Se a palavra aparecer no <b>título</b>, a vaga
+        não chega. É o filtro mais forte do sistema — use com cuidado.</p>
+      <div class="add">
+        <input type="text" id="dealbreaker_novo" placeholder="ex.: estágio, vendas, comprador"
+               onkeydown="if(event.key==='Enter'){event.preventDefault();addDeal()}">
+        <button type="button" onclick="addDeal()">Adicionar</button>
+      </div>
+      <ul class="list" id="dealbreakers"></ul>
+      <p class="hint">Sugestões comuns: <i>estágio, trainee, júnior, vendas, comercial,
+        comprador, consultoria, freelancer</i>.</p>
+    </div>
+  </section>
+
+  <!-- 10 ────────────────────────────────────────────── ajustes finais -->
+  <section class="step" data-step="9">
+    <p class="eyebrow">Etapa 9</p>
+    <h1>Últimos ajustes</h1>
+    <p class="lead">Quatro coisas que decidem se uma vaga boa no papel serve na prática.</p>
+
+    <div class="card">
+      <h2 style="margin-top:0">Regime de contratação</h2>
+      <div class="chips" id="regime"></div>
+    </div>
+
+    <div class="card">
+      <div class="row">
+        <label class="f" style="margin-bottom:0"><span>Salário mínimo aceitável <em>mensal, opcional</em></span>
+          <input type="text" id="salario" inputmode="numeric" placeholder="R$ 15.000"></label>
+        <label class="f" style="margin-bottom:0"><span>Seu inglês</span>
+          <select id="ingles">
+            <option value="">Selecione</option>
+            <option value="nenhum">Não falo</option>
+            <option value="basico">Básico</option>
+            <option value="intermediario">Intermediário</option>
+            <option value="avancado">Avançado</option>
+            <option value="fluente">Fluente</option>
+          </select></label>
+      </div>
+      <p class="hint">Vaga que exige fluência acima do seu nível entra marcada, não descartada —
+        você decide se vale tentar.</p>
+    </div>
+
+    <div class="card">
+      <h2 style="margin-top:0">Onde você não é candidato genérico</h2>
+      <p class="hint" style="margin:0 0 10px">Até 3 assuntos que você <b>geriu</b>, não só
+        encostou. Vaga que fala desses temas sobe no topo da lista e chega marcada.</p>
+      <div class="add">
+        <input type="text" id="esp_novo" placeholder="ex.: SAP S/4HANA, automação de processos"
+               onkeydown="if(event.key==='Enter'){event.preventDefault();addEsp()}">
+        <button type="button" onclick="addEsp()">Adicionar</button>
+      </div>
+      <ul class="list" id="especialidades"></ul>
+    </div>
+
+    <div class="card">
+      <h2 style="margin-top:0">Com que frequência quer receber</h2>
+      <div id="cadencia"></div>
+    </div>
+    <div class="err" id="e9"></div>
+  </section>
+
+  <!-- 11 ────────────────────────────────────────────── envio -->
+  <section class="step" data-step="10">
+    <p class="eyebrow">Última etapa</p>
+    <h1>Pronto para enviar</h1>
+    <p class="lead">Confira o resumo, aceite o uso dos dados e envie.</p>
+
+    <div class="card" id="resumo"></div>
+
+    <label class="opt">
+      <input type="checkbox" id="lgpd">
+      <span><b>Autorizo o uso dos meus dados para a busca de vagas</b>
+        <small>Currículo, respostas e histórico de avaliação são usados só para calibrar a
+          sua busca. Não são vendidos nem compartilhados com terceiros. Você pode pedir
+          exclusão a qualquer momento e tudo é apagado.</small></span></label>
+
+    <div class="err" id="e10"></div>
+  </section>
+
+  <!-- 12 ────────────────────────────────────────────── fim -->
+  <section class="step" data-step="11">
+    <div class="done">
+      <div class="big">📡</div>
+      <h1 id="fim_titulo">Recebido</h1>
+      <p class="lead" id="fim_texto">Seu radar entra no ar na próxima rodada.</p>
+      <div class="proto" id="protocolo"></div>
+      <div class="note ok" style="text-align:left">
+        <b>Próximo passo:</b> <span id="fim_passo">me chame no WhatsApp para eu confirmar o
+        recebimento e combinar o canal onde as vagas vão chegar.</span>
+      </div>
+      <div class="acts-final">
+        <a id="link_whats" href="#" target="_blank" rel="noopener">Falar no WhatsApp</a>
+        <button type="button" onclick="baixarJSON()">Baixar minhas respostas (JSON)</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Radar de Vagas · seus dados ficam neste navegador até você enviar<br>
+    <button type="button" class="chip" style="margin-top:10px" onclick="limpar()">Apagar e recomeçar</button>
+  </footer>
+</main>
+
+<nav class="nav" id="nav">
+  <div class="wrap">
+    <button type="button" class="ghost" id="btn_voltar" onclick="ir(-1)">Voltar</button>
+    <button type="button" class="primary" id="btn_avancar" onclick="ir(1)">Começar</button>
+  </div>
+</nav>
+
+<script>
+/* ───────────────────────── configuração ─────────────────────────
+   ENDPOINT  URL /exec do Apps Script que recebe o cadastro.
+             Vazio = o formulário funciona igual e cai no download do JSON.
+   CHAVE     a mesma senha que está no topo do intake-apps-script.gs.
+             Ela fica visível no código-fonte desta página — é anti-robô, não
+             é autenticação. O que protege é o endpoint não devolver nada.
+   WHATSAPP  número que aparece no fim, formato internacional só com dígitos.   */
+const CONFIG = {
+  ENDPOINT: "",
+  CHAVE: "",
+  WHATSAPP: "5511999999999",
+  OPERADOR: "Ramon"
+};
+
+/* ───────────────────────── opções ───────────────────────── */
+const OPCOES = {
+  situacao: [
+    ["empregado_sem_pressa","Empregado, olhando o mercado","Sem pressa. O corte é mais alto: só chega vaga que vale trocar."],
+    ["empregado_quero_sair","Empregado, mas quero sair","Rodada diária, corte médio."],
+    ["aviso_previo","Em aviso prévio","Prazo definido. Corte mais aberto e prioridade no envio."],
+    ["disponivel","Disponível agora","Rodada diária e o filtro mais aberto que existe."],
+    ["primeira","Buscando o primeiro emprego na área","Foco em vaga de entrada e programa de formação."]
+  ],
+  senioridade: [
+    ["estagio","Estágio / Trainee",""],
+    ["junior","Júnior",""],
+    ["pleno","Pleno",""],
+    ["senior","Sênior",""],
+    ["especialista","Especialista / Staff","Sênior técnico sem gestão de pessoas."],
+    ["coordenacao","Coordenação",""],
+    ["gerencia","Gerência",""],
+    ["head","Head / Diretoria",""],
+    ["c_level","C-level","CPO, CTO, CFO e equivalentes."]
+  ],
+  movimento: [
+    ["mesma","A mesma posição que tenho hoje","Trocar de empresa mantendo o nível. O filtro aceita o seu cargo atual."],
+    ["acima","Um degrau acima","Só vem o nível seguinte. Vaga igual à sua de hoje é descartada."],
+    ["transicao","Transição de carreira","Aceita cargo lateral e vaga de entrada na área nova. O filtro afrouxa no título e aperta no assunto."]
+  ],
+  modalidades: [
+    ["remoto","Remoto",""],
+    ["hibrido","Híbrido",""],
+    ["presencial","Presencial",""]
+  ],
+  mudanca: [
+    ["nao","Não mudaria","Só vagas que atendem à minha regra de local."],
+    ["depende","Depende da vaga","Traga marcada e eu avalio."],
+    ["sim","Mudaria sim","Abre a busca para o Brasil inteiro."]
+  ],
+  segmentos: ["Fintech / Bancos","Varejo / E-commerce","SaaS B2B","Indústria","Logística",
+    "Saúde","Educação","Seguros","Telecom","Agro","Governo / Público","Consultoria",
+    "Marketplace","Energia","Mobilidade"],
+  porte: ["Startup (até 50)","Scale-up (50–500)","Grande (500+)","Multinacional","Empresa pública"],
+  regime: ["CLT","PJ","Cooperado","Temporário","Estágio","Tanto faz"],
+  cadencia: [
+    ["diaria","Todo dia","Cada vaga nova chega no mesmo dia em que é publicada. É como a maioria usa."],
+    ["semanal","Uma vez por semana","Um único resumo, sexta de manhã. Menos ruído, mais risco de perder vaga que fecha rápido."]
+  ]
+};
+
+/* ───────────────────────── estado ───────────────────────── */
+const CHAVE = "radar_intake_v1";
+let passo = 0;
+const TOTAL = 11;                       // 0..10 preenchíveis; 11 é o fim
+
+let D = {
+  versao: "1.0", protocolo: "",
+  pessoa: {}, cv: {emprego_1:{}, emprego_2:{}},
+  cargos: {sugeridos: [], adicionais: []},
+  senioridade: [], movimento: {},
+  trabalho: {modalidades: [], abrangencia: {}},
+  empresas: {alvo: [], segmentos: [], porte: [], evitar: []},
+  filtros: {regime: [], deal_breakers: [], especialidades: []},
+  operacao: {canal: "telegram"},
+  consentimento: {}
+};
+
+function salvar(){ try{ localStorage.setItem(CHAVE, JSON.stringify({D, passo})); }catch(e){} }
+function carregar(){
+  try{
+    const s = JSON.parse(localStorage.getItem(CHAVE) || "null");
+    if(s && s.D){ D = Object.assign(D, s.D); passo = Math.min(s.passo || 0, 10); }
+  }catch(e){}
+}
+function limpar(){
+  if(!confirm("Apagar tudo que você preencheu e recomeçar?")) return;
+  localStorage.removeItem(CHAVE); location.href = location.pathname;
+}
+
+/* ───────────────────────── construtores ───────────────────────── */
+function radios(alvo, chave, lista, campo, onPick){
+  const el = document.getElementById(alvo);
+  el.innerHTML = "";
+  lista.forEach(([v, t, d]) => {
+    const l = document.createElement("label");
+    l.className = "opt";
+    l.innerHTML = `<input type="radio" name="${alvo}" value="${v}">
+      <span><b>${t}</b>${d ? `<small>${d}</small>` : ""}</span>`;
+    const inp = l.querySelector("input");
+    inp.checked = (campo() === v);
+    if(inp.checked) l.classList.add("sel");
+    inp.onchange = () => {
+      el.querySelectorAll(".opt").forEach(o => o.classList.remove("sel"));
+      l.classList.add("sel");
+      chave(v); if(onPick) onPick(v); salvar();
+    };
+    el.appendChild(l);
+  });
+}
+
+function checks(alvo, lista, arr, onChange){
+  const el = document.getElementById(alvo);
+  el.innerHTML = "";
+  lista.forEach(([v, t, d]) => {
+    const l = document.createElement("label");
+    l.className = "opt" + (arr.includes(v) ? " sel" : "");
+    l.innerHTML = `<input type="checkbox" value="${v}" ${arr.includes(v) ? "checked" : ""}>
+      <span><b>${t}</b>${d ? `<small>${d}</small>` : ""}</span>`;
+    l.querySelector("input").onchange = e => {
+      const i = arr.indexOf(v);
+      if(e.target.checked){ if(i < 0) arr.push(v); l.classList.add("sel"); }
+      else { if(i >= 0) arr.splice(i, 1); l.classList.remove("sel"); }
+      if(onChange) onChange(); salvar();
+    };
+    el.appendChild(l);
+  });
+}
+
+function chips(alvo, lista, arr){
+  const el = document.getElementById(alvo);
+  el.innerHTML = "";
+  lista.forEach(t => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "chip"; b.textContent = t;
+    b.setAttribute("aria-pressed", arr.includes(t));
+    b.onclick = () => {
+      const i = arr.indexOf(t);
+      if(i >= 0) arr.splice(i, 1); else arr.push(t);
+      b.setAttribute("aria-pressed", i < 0); salvar();
+    };
+    el.appendChild(b);
+  });
+}
+
+function listaEditavel(alvo, arr){
+  const el = document.getElementById(alvo);
+  el.innerHTML = "";
+  arr.forEach((t, i) => {
+    const li = document.createElement("li");
+    li.innerHTML = `<span></span><button type="button" title="Remover">×</button>`;
+    li.querySelector("span").textContent = t;
+    li.querySelector("button").onclick = () => { arr.splice(i, 1); listaEditavel(alvo, arr); salvar(); };
+    el.appendChild(li);
+  });
+}
+
+/* ───────────────────────── campos livres ───────────────────────── */
+function liga(id, get, set){
+  const el = document.getElementById(id);
+  if(!el) return;
+  const v = get(); if(v !== undefined && v !== null) el.value = v;
+  el.addEventListener("input", () => { set(el.value); salvar(); });
+  el.addEventListener("change", () => { set(el.value); salvar(); });
+}
+
+function addDe(inputId, arr, alvo, limite){
+  const el = document.getElementById(inputId);
+  const v = el.value.trim();
+  if(!v) return;
+  if(limite && arr.length >= limite){ alert(`Máximo de ${limite}.`); return; }
+  v.split(",").map(x => x.trim()).filter(Boolean).forEach(x => {
+    if(!arr.some(y => y.toLowerCase() === x.toLowerCase())) arr.push(x);
+  });
+  el.value = ""; listaEditavel(alvo, arr); salvar();
+}
+const addCargo = () => addDe("cargo_novo", D.cargos.adicionais, "cargos_extra", 6);
+const addDeal  = () => addDe("dealbreaker_novo", D.filtros.deal_breakers, "dealbreakers");
+const addEsp   = () => addDe("esp_novo", D.filtros.especialidades, "especialidades", 3);
+function addSeg(){
+  const el = document.getElementById("seg_novo");
+  const v = el.value.trim(); if(!v) return;
+  if(!OPCOES.segmentos.includes(v)) OPCOES.segmentos.push(v);
+  if(!D.empresas.segmentos.includes(v)) D.empresas.segmentos.push(v);
+  el.value = ""; chips("segmentos", OPCOES.segmentos, D.empresas.segmentos); salvar();
+}
+
+/* ───────────────────────── cargos sugeridos ───────────────────────── */
+function pintarSugeridos(){
+  const el = document.getElementById("sugeridos");
+  el.innerHTML = "";
+  if(!D.cargos.sugeridos.length){
+    document.getElementById("cargos_lead").textContent =
+      "Ainda não li o seu currículo, então não tenho sugestão pronta. Escreva abaixo os " +
+      "títulos que você quer buscar — depois da análise eu volto com ajustes.";
+    return;
+  }
+  D.cargos.sugeridos.forEach((c, i) => {
+    const d = document.createElement("div");
+    d.className = "cargo" + (c.aceito === false ? " no" : "");
+    d.innerHTML = `
+      <div class="t"></div>
+      <div class="por"></div>
+      <div class="acts">
+        <button type="button" class="chip" data-v="1">Serve</button>
+        <button type="button" class="chip" data-v="0">Não serve</button>
+      </div>`;
+    d.querySelector(".t").textContent = c.titulo;
+    d.querySelector(".por").textContent = c.porque || "";
+    const [sim, nao] = d.querySelectorAll("button");
+    sim.setAttribute("aria-pressed", c.aceito !== false);
+    nao.setAttribute("aria-pressed", c.aceito === false);
+    sim.onclick = () => { D.cargos.sugeridos[i].aceito = true;  pintarSugeridos(); salvar(); };
+    nao.onclick = () => { D.cargos.sugeridos[i].aceito = false; pintarSugeridos(); salvar(); };
+    el.appendChild(d);
+  });
+}
+
+/* ───────────────────────── abrangência por modalidade ───────────────────────── */
+const PLACEHOLDER_ABR = {
+  remoto: "Brasil todo · ou só a minha região · ou aceito fora do país",
+  hibrido: "ex.: Grande São Paulo, até 3 dias no escritório",
+  presencial: "ex.: São Paulo capital e região metropolitana"
+};
+function pintarAbrangencia(){
+  const box = document.getElementById("abrangencias");
+  const campos = document.getElementById("abr_campos");
+  const mods = D.trabalho.modalidades;
+  box.hidden = mods.length === 0;
+  campos.innerHTML = "";
+  mods.forEach(m => {
+    const nome = {remoto: "Remoto", hibrido: "Híbrido", presencial: "Presencial"}[m];
+    const l = document.createElement("label");
+    l.className = "f";
+    l.innerHTML = `<span>${nome} — até onde?</span>
+      <input type="text" placeholder="${PLACEHOLDER_ABR[m]}">`;
+    const inp = l.querySelector("input");
+    inp.value = D.trabalho.abrangencia[m] || "";
+    inp.oninput = () => { D.trabalho.abrangencia[m] = inp.value; salvar(); };
+    campos.appendChild(l);
+  });
+}
+
+/* ───────────────────────── validação ───────────────────────── */
+function erro(id, msg){
+  const el = document.getElementById(id);
+  if(el) el.textContent = msg || "";
+  if(msg) window.scrollTo({top: document.body.scrollHeight, behavior: "smooth"});
+  return !msg;
+}
+function valida(p){
+  if(p === 1){
+    if(!(D.pessoa.nome || "").trim()) return erro("e1", "Escreva seu nome.");
+    if(!/^\S+@\S+\.\S+$/.test(D.pessoa.email || "")) return erro("e1", "E-mail parece incompleto.");
+    if(((D.pessoa.whatsapp || "").replace(/\D/g, "")).length < 10)
+      return erro("e1", "WhatsApp com DDD, por favor — é por ele que as vagas chegam.");
+    if(!D.pessoa.situacao) return erro("e1", "Escolha como está sua situação hoje.");
+    return erro("e1", "");
+  }
+  if(p === 2){
+    if(!(D.cv.texto || "").trim() && !D.cv.envia_por_whatsapp)
+      return erro("e2", "Cole o currículo ou marque que vai enviar o PDF pelo WhatsApp.");
+    if(!(D.cv.emprego_1.cargo || "").trim())
+      return erro("e2", "O cargo do emprego mais recente é o que mais pesa na análise.");
+    return erro("e2", "");
+  }
+  if(p === 3){
+    const aceitos = D.cargos.sugeridos.filter(c => c.aceito !== false).length;
+    if(aceitos + D.cargos.adicionais.length === 0)
+      return erro("e3", "Sobrou nenhum cargo. Aceite ao menos um ou acrescente o seu.");
+    return erro("e3", "");
+  }
+  if(p === 4){
+    if(!D.senioridade.length) return erro("e4", "Marque ao menos uma senioridade.");
+    return erro("e4", "");
+  }
+  if(p === 5){
+    if(!D.movimento.tipo) return erro("e5", "Escolha o tipo de movimento.");
+    if(D.movimento.tipo === "transicao" && !(D.movimento.para || "").trim())
+      return erro("e5", "Diga para qual cargo você quer migrar.");
+    return erro("e5", "");
+  }
+  if(p === 6){
+    if(!D.trabalho.modalidades.length)
+      return erro("e6", "Marque ao menos uma modalidade de trabalho.");
+    const semLocal = D.trabalho.modalidades.filter(m => !(D.trabalho.abrangencia[m] || "").trim());
+    if(semLocal.length)
+      return erro("e6", "Falta dizer até onde você aceita em: " +
+        semLocal.map(m => ({remoto:"remoto",hibrido:"híbrido",presencial:"presencial"}[m])).join(", ") + ".");
+    if(!D.trabalho.muda_de_cidade) return erro("e6", "Responda sobre mudar de cidade.");
+    return erro("e6", "");
+  }
+  if(p === 9){
+    if(!D.operacao.cadencia) return erro("e9", "Escolha a frequência de envio.");
+    return erro("e9", "");
+  }
+  if(p === 10){
+    if(!D.consentimento.lgpd)
+      return erro("e10", "Preciso da sua autorização para usar os dados na busca.");
+    return erro("e10", "");
+  }
+  return true;
+}
+
+/* ───────────────────────── navegação ───────────────────────── */
+function ir(delta){
+  if(delta > 0 && passo <= 10 && !valida(passo)) return;
+  if(delta > 0 && passo === 10) return enviar();
+  passo = Math.max(0, Math.min(11, passo + delta));
+  render(); salvar();
+  window.scrollTo({top: 0, behavior: "instant"});
+}
+
+function render(){
+  document.querySelectorAll(".step").forEach(s =>
+    s.classList.toggle("on", +s.dataset.step === passo));
+
+  const fim = passo === 11;
+  document.getElementById("nav").style.display = fim ? "none" : "";
+  document.getElementById("passo").textContent = fim ? "" : `${passo + 1} / ${TOTAL}`;
+  document.getElementById("prog").style.width = ((passo / TOTAL) * 100) + "%";
+  document.getElementById("btn_voltar").style.visibility = (passo === 0 || fim) ? "hidden" : "";
+  document.getElementById("btn_avancar").textContent =
+    passo === 0 ? "Começar" : passo === 10 ? "Enviar cadastro" : "Continuar";
+
+  if(passo === 3) pintarSugeridos();
+  if(passo === 6) pintarAbrangencia();
+  if(passo === 10) pintarResumo();
+}
+
+/* ───────────────────────── resumo ───────────────────────── */
+function pintarResumo(){
+  const cargos = D.cargos.sugeridos.filter(c => c.aceito !== false).map(c => c.titulo)
+                  .concat(D.cargos.adicionais);
+  const mods = D.trabalho.modalidades.map(m =>
+    `${({remoto:"remoto",hibrido:"híbrido",presencial:"presencial"}[m])} (${D.trabalho.abrangencia[m] || "—"})`);
+  const mov = (OPCOES.movimento.find(m => m[0] === D.movimento.tipo) || [,"—"])[1];
+  const rotSen = v => (OPCOES.senioridade.find(s => s[0] === v) || [,v])[1];
+  const linhas = [
+    ["Nome", D.pessoa.nome],
+    ["Cargos buscados", cargos.join(" · ")],
+    ["Senioridade", D.senioridade.map(rotSen).join(", ")],
+    ["Movimento", mov],
+    ["Trabalho", mods.join(" · ")],
+    ["Empresas-alvo", (D.empresas.alvo || []).length + " empresas"],
+    ["Segmentos", (D.empresas.segmentos || []).join(", ") || "—"],
+    ["Não pode chegar", (D.filtros.deal_breakers || []).join(", ") || "—"],
+    ["Especialidades", (D.filtros.especialidades || []).join(", ") || "—"],
+    ["Frequência", D.operacao.cadencia === "semanal" ? "Semanal" : "Diária"]
+  ];
+  document.getElementById("resumo").innerHTML = linhas.map(([k, v]) =>
+    `<div style="display:flex;gap:12px;padding:8px 0;border-bottom:1px solid var(--line)">
+       <div style="flex:0 0 40%;color:var(--muted);font-size:14px">${k}</div>
+       <div style="flex:1;font-size:14.5px;min-width:0;word-break:break-word"></div>
+     </div>`).join("") ;
+  document.querySelectorAll("#resumo > div > div:last-child").forEach((el, i) => {
+    el.textContent = linhas[i][1] || "—";
+  });
+}
+
+/* ───────────────────────── envio ───────────────────────── */
+function coletarTextareas(){
+  const linhas = t => (t || "").split(/[\n;]+/).map(x => x.trim()).filter(Boolean);
+  const emp = document.getElementById("empresas_alvo").value;
+  D.empresas.alvo = linhas(emp).flatMap(l =>
+    l.includes(",") ? l.split(",").map(x => x.trim()).filter(Boolean) : [l]);
+  D.empresas.evitar = linhas(document.getElementById("empresas_evitar").value).map(l => {
+    const m = l.split(/\s+[—–-]\s+/);
+    return {empresa: m[0].trim(), motivo: (m[1] || "").trim()};
+  });
+}
+
+function montarPayload(){
+  coletarTextareas();
+  D.protocolo = D.protocolo || ("RDV-" + Math.random().toString(36).slice(2, 6).toUpperCase() +
+                                Math.random().toString(36).slice(2, 6).toUpperCase());
+  D.enviado_em = new Date().toISOString();
+  D.consentimento = {lgpd: true, em: D.enviado_em};
+  D.cargos.finais = D.cargos.sugeridos.filter(c => c.aceito !== false).map(c => c.titulo)
+                     .concat(D.cargos.adicionais);
+  D.slug = (D.pessoa.nome || "cliente").toLowerCase()
+            .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+            .replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40);
+  return D;
+}
+
+async function enviar(){
+  const btn = document.getElementById("btn_avancar");
+  btn.disabled = true; btn.textContent = "Enviando…";
+  const payload = montarPayload();
+  let confirmado = false;
+
+  if(CONFIG.ENDPOINT){
+    // text/plain evita o preflight do CORS, que o Apps Script não responde.
+    try{
+      const r = await fetch(CONFIG.ENDPOINT, {
+        method: "POST", redirect: "follow",
+        headers: {"Content-Type": "text/plain;charset=utf-8"},
+        body: JSON.stringify({chave: CONFIG.CHAVE, tipo: "intake", dados: payload})
+      });
+      confirmado = r.ok;
+    }catch(e){
+      // Sem CORS na resposta não dá pra ler o resultado, mas o POST chega.
+      try{
+        await fetch(CONFIG.ENDPOINT, {
+          method: "POST", mode: "no-cors",
+          headers: {"Content-Type": "text/plain;charset=utf-8"},
+          body: JSON.stringify({chave: CONFIG.CHAVE, tipo: "intake", dados: payload})
+        });
+      }catch(e2){}
+    }
+  }
+
+  document.getElementById("protocolo").textContent = payload.protocolo;
+  if(!CONFIG.ENDPOINT){
+    // Entrega manual por opção: nada falhou, então nada de alarme.
+    document.getElementById("fim_texto").textContent =
+      "Falta só me entregar as respostas — é o passo abaixo.";
+    document.getElementById("fim_passo").textContent =
+      "baixe o arquivo abaixo e me mande no WhatsApp" +
+      (D.cv.envia_por_whatsapp ? ", junto com o seu currículo em PDF." : ".");
+  }else if(!confirmado){
+    document.getElementById("fim_titulo").textContent = "Quase lá";
+    document.getElementById("fim_texto").textContent =
+      "Não consegui confirmar o envio automático. Baixe suas respostas e me mande no " +
+      "WhatsApp — leva dez segundos e nada se perde.";
+    document.getElementById("fim_passo").textContent =
+      "baixe o arquivo abaixo e envie no WhatsApp junto com o seu currículo em PDF.";
+  }else if(D.cv.envia_por_whatsapp){
+    document.getElementById("fim_passo").textContent =
+      "me envie o seu currículo em PDF no WhatsApp — é o que falta para eu montar o perfil.";
+  }
+
+  const msg = `Olá ${CONFIG.OPERADOR}! Terminei o cadastro do Radar de Vagas.\n` +
+              `Protocolo: ${payload.protocolo}\nNome: ${payload.pessoa.nome}`;
+  document.getElementById("link_whats").href =
+    `https://wa.me/${CONFIG.WHATSAPP}?text=${encodeURIComponent(msg)}`;
+
+  passo = 11; render();
+  window.scrollTo({top: 0, behavior: "instant"});
+  try{ localStorage.setItem(CHAVE + "_enviado", JSON.stringify(payload)); }catch(e){}
+}
+
+function baixarJSON(){
+  const blob = new Blob([JSON.stringify(montarPayload(), null, 2)], {type: "application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `radar-${D.slug || "cadastro"}.json`;
+  a.click(); URL.revokeObjectURL(a.href);
+}
+
+/* ───────────────────────── prefill via link ─────────────────────────
+   ?s=<base64 de {nome, analise, cargos:[{titulo,porque}]}>
+   É como os 3 cargos sugeridos chegam ao cliente depois da leitura do CV. */
+function prefill(){
+  const p = new URLSearchParams(location.search).get("s");
+  if(!p) return;
+  try{
+    const j = JSON.parse(decodeURIComponent(escape(atob(p.replace(/-/g, "+").replace(/_/g, "/")))));
+    if(j.nome){
+      D.pessoa.nome = D.pessoa.nome || j.nome;
+      document.getElementById("ola").textContent = `${j.nome.split(" ")[0]}, vamos calibrar a sua busca`;
+    }
+    if(Array.isArray(j.cargos) && j.cargos.length && !D.cargos.sugeridos.length)
+      D.cargos.sugeridos = j.cargos.map(c =>
+        typeof c === "string" ? {titulo: c, porque: "", aceito: true}
+                              : {titulo: c.titulo, porque: c.porque || "", aceito: true});
+    if(j.analise) document.getElementById("cargos_lead").textContent = j.analise;
+  }catch(e){}
+}
+
+/* ───────────────────────── boot ───────────────────────── */
+carregar();
+prefill();
+
+liga("nome",     () => D.pessoa.nome,     v => D.pessoa.nome = v);
+liga("email",    () => D.pessoa.email,    v => D.pessoa.email = v);
+liga("whatsapp", () => D.pessoa.whatsapp, v => D.pessoa.whatsapp = v);
+liga("linkedin", () => D.pessoa.linkedin, v => D.pessoa.linkedin = v);
+liga("cidade",   () => D.pessoa.cidade,   v => D.pessoa.cidade = v);
+liga("uf",       () => D.pessoa.uf,       v => D.pessoa.uf = v.toUpperCase());
+
+liga("cv_texto",   () => D.cv.texto, v => D.cv.texto = v);
+liga("e1_empresa", () => D.cv.emprego_1.empresa, v => D.cv.emprego_1.empresa = v);
+liga("e1_cargo",   () => D.cv.emprego_1.cargo,   v => D.cv.emprego_1.cargo = v);
+liga("e1_periodo", () => D.cv.emprego_1.periodo, v => D.cv.emprego_1.periodo = v);
+liga("e2_empresa", () => D.cv.emprego_2.empresa, v => D.cv.emprego_2.empresa = v);
+liga("e2_cargo",   () => D.cv.emprego_2.cargo,   v => D.cv.emprego_2.cargo = v);
+liga("e2_periodo", () => D.cv.emprego_2.periodo, v => D.cv.emprego_2.periodo = v);
+liga("anos",       () => D.cv.anos_experiencia,  v => D.cv.anos_experiencia = v);
+
+liga("mov_de",   () => D.movimento.de,   v => D.movimento.de = v);
+liga("mov_para", () => D.movimento.para, v => D.movimento.para = v);
+liga("mov_obs",  () => D.movimento.observacao, v => D.movimento.observacao = v);
+
+liga("salario", () => D.filtros.salario_minimo, v => D.filtros.salario_minimo = v);
+liga("ingles",  () => D.filtros.ingles,         v => D.filtros.ingles = v);
+
+document.getElementById("cv_whats").checked = !!D.cv.envia_por_whatsapp;
+document.getElementById("cv_whats").onchange = e => { D.cv.envia_por_whatsapp = e.target.checked; salvar(); };
+document.getElementById("lgpd").checked = !!D.consentimento.lgpd;
+document.getElementById("lgpd").onchange = e => { D.consentimento.lgpd = e.target.checked; salvar(); };
+
+if(D.empresas.alvo && D.empresas.alvo.length)
+  document.getElementById("empresas_alvo").value = D.empresas.alvo.join("\n");
+if(D.empresas.evitar && D.empresas.evitar.length)
+  document.getElementById("empresas_evitar").value =
+    D.empresas.evitar.map(e => e.motivo ? `${e.empresa} — ${e.motivo}` : e.empresa).join("\n");
+["empresas_alvo","empresas_evitar"].forEach(id =>
+  document.getElementById(id).addEventListener("input", () => { coletarTextareas(); salvar(); }));
+
+radios("situacao", v => D.pessoa.situacao = v, OPCOES.situacao, () => D.pessoa.situacao);
+checks("senioridade", OPCOES.senioridade, D.senioridade);
+radios("movimento", v => D.movimento.tipo = v, OPCOES.movimento, () => D.movimento.tipo,
+       v => document.getElementById("mov_transicao").hidden = (v !== "transicao"));
+document.getElementById("mov_transicao").hidden = (D.movimento.tipo !== "transicao");
+checks("modalidades", OPCOES.modalidades, D.trabalho.modalidades, pintarAbrangencia);
+radios("mudanca", v => D.trabalho.muda_de_cidade = v, OPCOES.mudanca, () => D.trabalho.muda_de_cidade);
+radios("cadencia", v => D.operacao.cadencia = v, OPCOES.cadencia, () => D.operacao.cadencia);
+
+chips("segmentos", OPCOES.segmentos, D.empresas.segmentos);
+chips("porte", OPCOES.porte, D.empresas.porte);
+chips("regime", OPCOES.regime, D.filtros.regime);
+
+listaEditavel("cargos_extra", D.cargos.adicionais);
+listaEditavel("dealbreakers", D.filtros.deal_breakers);
+listaEditavel("especialidades", D.filtros.especialidades);
+
+render();
+</script>
+</body>
+</html>
