@@ -457,7 +457,16 @@ Não precisa formatar — só o texto já serve."></textarea></label>
         <b>Próximo passo:</b> <span id="fim_passo">me chame no WhatsApp para eu confirmar o
         recebimento e combinar o canal onde as vagas vão chegar.</span>
       </div>
+      <div class="note" id="box_telegram" style="text-align:left" hidden>
+        <b>Ative o seu radar no Telegram.</b> É por lá que as vagas chegam, com os
+        botões de avaliar. O link já leva o seu código — é só tocar e apertar
+        <b>Iniciar</b>.
+      </div>
+
       <div class="acts-final">
+        <a id="link_telegram" href="#" target="_blank" rel="noopener" hidden
+           style="background:var(--accent);border-color:var(--accent);color:var(--accent-fg)">
+          Ativar no Telegram</a>
         <a id="link_whats" href="#" target="_blank" rel="noopener">Falar no WhatsApp</a>
         <button type="button" onclick="baixarJSON()">Baixar minhas respostas (JSON)</button>
       </div>
@@ -484,12 +493,16 @@ Não precisa formatar — só o texto já serve."></textarea></label>
    CHAVE     a mesma senha que está no topo do intake-apps-script.gs.
              Ela fica visível no código-fonte desta página — é anti-robô, não
              é autenticação. O que protege é o endpoint não devolver nada.
-   WHATSAPP  número que aparece no fim, formato internacional só com dígitos.   */
+   WHATSAPP  número que aparece no fim, formato internacional só com dígitos.
+   BOT       usuário do bot no Telegram, sem @. É o que monta o link de
+             ativação — o cliente toca, manda /start com o próprio protocolo,
+             e a Central grava o chat_id dele sozinha.                        */
 const CONFIG = {
   ENDPOINT: "",
   CHAVE: "aoSjhhTNCBBTm6Vu5GtLDRbkhG6U4zSK",
   WHATSAPP: "5511971388018",
-  OPERADOR: "Ramon"
+  OPERADOR: "Ramon",
+  BOT: "radar_vagas_v1_hasmancorp_bot"
 };
 
 /* ───────────────────────── opções ───────────────────────── */
@@ -914,6 +927,23 @@ async function enviar(){
               `Protocolo: ${payload.protocolo}\nNome: ${payload.pessoa.nome}`;
   document.getElementById("link_whats").href =
     `https://wa.me/${CONFIG.WHATSAPP}?text=${encodeURIComponent(msg)}`;
+
+  // Deep link do Telegram: o /start chega no bot com o protocolo como payload,
+  // e a Central grava o chat_id sozinha. É o que substitui o passo manual de
+  // descobrir o chat_id — que aliás fica impossível depois que o webhook liga,
+  // porque com webhook ativo o getUpdates para de responder.
+  //
+  // Só aparece se o cadastro chegou de fato: sem confirmação, o código ainda
+  // não existe do outro lado, e o /start responderia "não achei esse código".
+  if(CONFIG.BOT && confirmado){
+    const a = document.getElementById("link_telegram");
+    a.href = `https://t.me/${CONFIG.BOT}?start=${encodeURIComponent(payload.protocolo)}`;
+    a.hidden = false;
+    document.getElementById("box_telegram").hidden = false;
+    document.getElementById("fim_passo").textContent =
+      "toque em Ativar no Telegram aqui embaixo. É o último passo." +
+      (D.cv.envia_por_whatsapp ? " Depois me mande o currículo em PDF no WhatsApp." : "");
+  }
 
   passo = 11; render();
   window.scrollTo({top: 0, behavior: "instant"});
