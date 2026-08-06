@@ -17,7 +17,7 @@ No topo do `<script>` em `index.html`:
 const CONFIG = {
   ENDPOINT: "",              // URL /exec do Apps Script da Central de Cadastros
   CHAVE:    "",              // a mesma senha do topo do intake-apps-script.gs
-  WHATSAPP: "5511999999999", // só dígitos, formato internacional
+  WHATSAPP: "5511999999999", // só dígitos, formato internacional (exemplo)
   OPERADOR: "Ramon"
 };
 ```
