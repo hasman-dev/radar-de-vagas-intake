@@ -145,14 +145,14 @@
   <section class="step on" data-step="0">
     <p class="eyebrow">Antes de começar</p>
     <h1 id="ola">Vamos calibrar a sua busca</h1>
-    <p class="lead">A partir daqui, um robô varre os portais de vaga todo dia procurando
+    <p class="lead">A partir daqui, um robô varre os portais de vaga procurando
       o que se encaixa em você — e te manda só o que passa no filtro, com uma explicação
       de por que passou.</p>
 
     <div class="card">
       <h2 style="margin-top:0">O que acontece depois que você enviar</h2>
       <p style="margin:0 0 10px"><b>1.</b> Eu leio suas respostas e monto o seu perfil de busca.</p>
-      <p style="margin:0 0 10px"><b>2.</b> A primeira rodada roda em até 24h e cria a sua planilha de acompanhamento.</p>
+      <p style="margin:0 0 10px"><b>2.</b> A primeira rodada cria a sua planilha de acompanhamento.</p>
       <p style="margin:0 0 10px"><b>3.</b> Toda vaga nova chega no seu celular com três botões:
         <b>boa</b>, <b>não era pra vir</b> e <b>não vou seguir</b>.</p>
       <p style="margin:0"><b>4.</b> Cada clique seu recalibra o filtro. Em duas semanas o radar
@@ -190,8 +190,8 @@
     </div>
 
     <h2>Como está sua situação hoje?</h2>
-    <p class="hint" style="margin-bottom:10px">Isso define o ritmo da busca — quem está fora
-      recebe rodada diária e corte mais aberto.</p>
+    <p class="hint" style="margin-bottom:10px">Isso calibra o filtro — quem está fora
+      recebe um corte mais aberto, porque vaga mediana ainda é entrevista.</p>
     <div id="situacao"></div>
     <div class="err" id="e1"></div>
   </section>
@@ -422,7 +422,9 @@ Não precisa formatar — só o texto já serve."></textarea></label>
     </div>
 
     <div class="card">
-      <h2 style="margin-top:0">Com que frequência quer receber</h2>
+      <h2 style="margin-top:0">Como prefere receber</h2>
+      <p class="hint" style="margin:0 0 10px">A frequência de entrega faz parte do
+        plano — isto aqui é para eu saber qual se encaixa em você.</p>
       <div id="cadencia"></div>
     </div>
     <div class="err" id="e9"></div>
@@ -508,10 +510,10 @@ const CONFIG = {
 /* ───────────────────────── opções ───────────────────────── */
 const OPCOES = {
   situacao: [
-    ["empregado_sem_pressa","Empregado, olhando o mercado","Sem pressa. O corte é mais alto: só chega vaga que vale trocar."],
-    ["empregado_quero_sair","Empregado, mas quero sair","Rodada diária, corte médio."],
-    ["aviso_previo","Em aviso prévio","Prazo definido. Corte mais aberto e prioridade no envio."],
-    ["disponivel","Disponível agora","Rodada diária e o filtro mais aberto que existe."],
+    ["empregado_sem_pressa","Empregado, olhando o mercado","Sem pressa. O corte é mais alto: só entra vaga que vale trocar."],
+    ["empregado_quero_sair","Empregado, mas quero sair","Corte médio: nem só o extraordinário, nem tudo."],
+    ["aviso_previo","Em aviso prévio","Prazo definido. Corte mais aberto e prioridade na fila."],
+    ["disponivel","Disponível agora","O filtro mais aberto que existe."],
     ["primeira","Buscando o primeiro emprego na área","Foco em vaga de entrada e programa de formação."]
   ],
   senioridade: [
@@ -545,9 +547,12 @@ const OPCOES = {
     "Marketplace","Energia","Mobilidade"],
   porte: ["Startup (até 50)","Scale-up (50–500)","Grande (500+)","Multinacional","Empresa pública"],
   regime: ["CLT","PJ","Cooperado","Temporário","Estágio","Tanto faz"],
+  // Preferência, não promessa: a frequência de entrega faz parte do plano
+  // contratado. Perguntar aqui serve para dimensionar o plano certo — e
+  // prometer cadência antes de existir contrato foi o que tirou daqui.
   cadencia: [
-    ["diaria","Todo dia","Cada vaga nova chega no mesmo dia em que é publicada. É como a maioria usa."],
-    ["semanal","Uma vez por semana","Um único resumo, sexta de manhã. Menos ruído, mais risco de perder vaga que fecha rápido."]
+    ["frequente","Quanto antes, sempre","Prefiro receber assim que a vaga aparecer, mesmo que sejam poucas por vez."],
+    ["semanal","Agrupado, uma vez por semana","Prefiro um resumo só. Menos ruído, mais risco de perder vaga que fecha rápido."]
   ]
 };
 
@@ -838,7 +843,7 @@ function pintarResumo(){
     ["Segmentos", (D.empresas.segmentos || []).join(", ") || "—"],
     ["Não pode chegar", (D.filtros.deal_breakers || []).join(", ") || "—"],
     ["Especialidades", (D.filtros.especialidades || []).join(", ") || "—"],
-    ["Frequência", D.operacao.cadencia === "semanal" ? "Semanal" : "Diária"]
+    ["Prefere receber", D.operacao.cadencia === "semanal" ? "Agrupado, semanal" : "Quanto antes"]
   ];
   document.getElementById("resumo").innerHTML = linhas.map(([k, v]) =>
     `<div style="display:flex;gap:12px;padding:8px 0;border-bottom:1px solid var(--line)">
