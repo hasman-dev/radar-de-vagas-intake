@@ -256,11 +256,12 @@
 
   <div class="capa-dentro">
     <h1>A vaga certa não aparece sozinha.</h1>
-    <p class="lead">Um robô varre os portais procurando o que se encaixa em você.
-      Mas antes dele, uma pessoa lê o seu currículo — porque é isso que decide o
-      que o robô vai procurar.</p>
-    <p class="lead">Este cadastro é o que separa os dois trabalhos. Ele calibra a
-      busca no seu nome.</p>
+    <p class="lead">Nossa inteligência artificial acompanha os portais de vaga e
+      separa o que combina com o seu perfil, ficando mais precisa a cada avaliação
+      que você faz.</p>
+    <p class="lead">Antes dela, um especialista lê o seu currículo e define o que a
+      busca deve procurar. É essa combinação que sustenta a sua recolocação — e
+      este cadastro é o que liga as duas pontas.</p>
     <button type="button" class="primary" onclick="abrirFormulario()">Começar o cadastro</button>
     <p class="rodape" style="text-align:left;padding-top:16px">
       11 etapas · 6 a 10 minutos · dá para pausar e voltar</p>
@@ -279,12 +280,14 @@
     <h1 id="ola">Vamos calibrar a sua busca</h1>
     <div class="card">
       <h2 style="margin-top:0">O que acontece depois que você enviar</h2>
-      <p style="margin:0 0 10px"><b>1.</b> Eu leio suas respostas e monto o seu perfil de busca.</p>
-      <p style="margin:0 0 10px"><b>2.</b> A primeira rodada cria a sua planilha de acompanhamento.</p>
-      <p style="margin:0 0 10px"><b>3.</b> As vagas chegam no seu celular, cada uma com três
-        botões: <b>boa</b>, <b>não era pra vir</b> e <b>não vou seguir</b>.</p>
-      <p style="margin:0"><b>4.</b> Cada clique seu recalibra o filtro. Quanto mais você usa,
-        mais o radar fica seu.</p>
+      <p style="margin:0 0 10px"><b>1.</b> Um especialista lê as suas respostas e o seu
+        currículo, e propõe os três cargos que melhor traduzem a sua experiência.</p>
+      <p style="margin:0 0 10px"><b>2.</b> Com o seu aval, a busca entra no ar e a sua
+        planilha de acompanhamento é criada.</p>
+      <p style="margin:0 0 10px"><b>3.</b> As vagas selecionadas chegam no seu celular, cada
+        uma com três botões: <b>boa</b>, <b>não era pra vir</b> e <b>não vou seguir</b>.</p>
+      <p style="margin:0"><b>4.</b> Cada avaliação sua ajusta o modelo. Quanto mais você usa,
+        mais precisa a seleção fica para o seu perfil.</p>
     </div>
 
     <div class="note">Leva de 6 a 10 minutos. Pode fechar e voltar depois: as respostas
@@ -295,8 +298,7 @@
   <section class="step" data-step="1">
     <h1>Quem é você</h1>
     <p class="lead">As vagas chegam pelo Telegram, que você ativa no fim. O WhatsApp
-      é por onde eu falo com você. O LinkedIn é de onde eu tiro o contexto que o
-      currículo não conta.</p>
+      é o nosso canal de contato. O LinkedIn dá o contexto que o currículo não conta.</p>
 
     <div class="card">
       <label class="f"><span>Nome completo</span>
@@ -379,10 +381,10 @@ Não precisa formatar — só o texto já serve."></textarea></label>
         <span>Sua lista <em>opcional</em></span>
         <textarea id="cargos_proprios" rows="2"
           placeholder="Escreva como digitaria num portal de vagas."></textarea></label>
-      <p class="hint">Responda antes de olhar a minha leitura, logo abaixo. A distância
-        entre as duas listas diz muito: se batem, você conhece o seu mercado; se não,
-        provavelmente você está procurando com as palavras erradas — e é por isso que
-        a vaga certa não aparece.</p>
+      <p class="hint">Responda antes de olhar a leitura do especialista, logo abaixo.
+        A distância entre as duas listas diz muito: se batem, você conhece o seu
+        mercado; se não, provavelmente a busca está sendo feita com as palavras
+        erradas — e é por isso que a vaga certa não aparece.</p>
     </div>
 
     <p class="lead" id="cargos_lead">Estes são os três cargos que melhor se encaixam no seu
@@ -454,8 +456,9 @@ Não precisa formatar — só o texto já serve."></textarea></label>
   <!-- 8 ─────────────────────────────────────────────── empresas alvo -->
   <section class="step" data-step="7">
     <h1>Onde você quer trabalhar</h1>
-    <p class="lead">As empresas que você listar aqui ganham tratamento especial: o robô lê o
-      site de carreiras delas direto, e pega a vaga antes de ela chegar nos portais.</p>
+    <p class="lead">As empresas que você listar aqui ganham acompanhamento dedicado:
+      a busca lê o site de carreiras de cada uma, e encontra a vaga antes de ela
+      chegar aos portais.</p>
 
     <div class="card">
       <h2 style="margin-top:0">Empresas-alvo</h2>
@@ -493,7 +496,7 @@ Não precisa formatar — só o texto já serve."></textarea></label>
     <div class="card">
       <h2 style="margin-top:0">Empresas a evitar</h2>
       <p class="hint" style="margin:0 0 10px">Uma por linha. Concorrente com cláusula,
-        ex-empregador, consultoria que você não quer. O motivo é opcional e fica só comigo.</p>
+        ex-empregador, consultoria que você não quer. O motivo é opcional e não sai daqui.</p>
       <textarea id="empresas_evitar" rows="4" placeholder="Empresa X — cláusula de não concorrência"></textarea>
     </div>
 
@@ -551,7 +554,7 @@ Não precisa formatar — só o texto já serve."></textarea></label>
     <div class="card">
       <h2 style="margin-top:0">Como prefere receber</h2>
       <p class="hint" style="margin:0 0 10px">A frequência de entrega faz parte do
-        plano. Isto aqui é para eu saber qual se encaixa em você.</p>
+        plano. Isto aqui serve para identificar qual se encaixa em você.</p>
       <div id="cadencia"></div>
     </div>
     <div class="err" id="e9" role="alert" tabindex="-1"></div>
@@ -581,8 +584,8 @@ Não precisa formatar — só o texto já serve."></textarea></label>
       <p class="lead" id="fim_texto">Seu radar entra no ar na próxima rodada.</p>
       <div class="proto" id="protocolo"></div>
       <div class="note ok" style="text-align:left">
-        <b>Próximo passo:</b> <span id="fim_passo">eu leio o seu cadastro e volto com
-        os três cargos para você aceitar ou recusar.</span>
+        <b>Próximo passo:</b> <span id="fim_passo">um especialista lê o seu cadastro e
+        volta com os três cargos para você aceitar ou recusar.</span>
       </div>
       <div class="note" id="box_telegram" style="text-align:left" hidden>
         <b>Ative o seu radar no Telegram.</b> É por lá que as vagas chegam, com os
@@ -1088,18 +1091,18 @@ async function enviar(){
     document.getElementById("fim_texto").textContent =
       "Falta só me entregar as respostas — é o passo abaixo.";
     document.getElementById("fim_passo").textContent =
-      "baixe o arquivo abaixo e me envie por e-mail" +
+      "baixe o arquivo abaixo e envie por e-mail" +
       (D.cv.envia_por_whatsapp ? ", junto com o seu currículo em PDF." : ".");
   }else if(!confirmado){
     document.getElementById("fim_titulo").textContent = "Quase lá";
     document.getElementById("fim_texto").textContent =
-      "Não consegui confirmar o envio automático. Baixe suas respostas e me envie " +
-      "por e-mail: leva dez segundos e nada se perde.";
+      "Não foi possível confirmar o envio automático. Baixe as suas respostas e " +
+      "envie por e-mail: leva dez segundos e nada se perde.";
     document.getElementById("fim_passo").textContent =
       "baixe o arquivo abaixo e envie por e-mail, junto com o seu currículo em PDF.";
   }else if(D.cv.envia_por_whatsapp){
     document.getElementById("fim_passo").textContent =
-      "me envie o seu currículo em PDF por e-mail: é o que falta para eu montar o perfil.";
+      "envie o seu currículo em PDF por e-mail: é o que falta para montar o seu perfil.";
   }
 
   const assunto = `Radar de Vagas — cadastro ${payload.protocolo}`;
@@ -1123,7 +1126,7 @@ async function enviar(){
     document.getElementById("box_telegram").hidden = false;
     document.getElementById("fim_passo").textContent =
       "toque em Ativar no Telegram aqui embaixo. É o último passo." +
-      (D.cv.envia_por_whatsapp ? " Depois me mande o currículo em PDF por e-mail." : "");
+      (D.cv.envia_por_whatsapp ? " Depois envie o currículo em PDF por e-mail." : "");
   }
 
   passo = 11; render();
