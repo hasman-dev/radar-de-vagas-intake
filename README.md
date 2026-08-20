@@ -84,9 +84,11 @@ antes de mexer, porque cada peça carrega uma decisão.
 | **Campo como linha** | Entrada de texto é um fio, não uma caixa. Caixa dentro de painel é caixa dentro de caixa. |
 | **Azul profundo** | `#2c527a`, 7,3:1 sobre o papel. Só o botão primário e os acentos o usam. |
 
-No celular a régua vira faixa horizontal e perde os números: a linha
-`ETAPA 03 / 11` já diz onde a pessoa está, e 64px de trilho custam caro numa
-tela de 375.
+**A régua continua vertical no celular.** Virar faixa horizontal a transformava
+numa barra de progresso comum, e o elemento se perdia justamente onde a maioria
+preenche. O trilho encolhe de 64px para 46px, e para 38px abaixo de 360px —
+sobram 282px de conteúdo num iPhone SE, sem scroll horizontal. Só o número
+some na largura menor; o traço ativo continua marcando a posição.
 
 **Não use `.card` para agrupar.** O painel já é o cartão; bloco interno separa
 por espaço e por um fio. Cartão dentro de cartão é o erro que o craft floor

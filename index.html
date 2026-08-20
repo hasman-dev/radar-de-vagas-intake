@@ -189,24 +189,34 @@
     .tick i,.tick b,input,textarea{transition:none}
   }
 
-  /* No celular a régua vira uma faixa fina: a linha "ETAPA 03 / 11" já diz
-     onde a pessoa está, e 64px de trilho custam caro numa tela de 375. */
+  /* A régua continua VERTICAL no celular. Ela é o que dá identidade à página,
+     e virar faixa horizontal a transformava numa barra de progresso comum —
+     perdendo o elemento justamente onde a maioria preenche. O trilho encolhe
+     de 64px para 46px, o que ainda deixa ~295px de conteúdo num iPhone SE. */
   @media (max-width:640px){
-    .painel{margin:0;border:0;border-radius:0;grid-template-columns:1fr;
+    .painel{margin:0;border:0;border-radius:0;grid-template-columns:46px 1fr;
             min-height:100vh}
-    .regua{flex-direction:row;border-right:0;border-bottom:1px solid var(--line-soft);
-           padding:12px 16px;gap:0;overflow-x:auto;justify-content:flex-start}
-    .selo{margin:0 12px 0 0}
-    .tick{padding:0 6px}
-    .tick i{width:14px}
-    .tick[aria-current=step] i{width:20px}
-    .tick b{display:none}
-    .conteudo{padding:22px 20px 0}
-    h1{font-size:24px}
+    .regua{padding:16px 0}
+    .selo{width:22px;height:22px;margin-bottom:14px}
+    .selo::after{width:9px}
+    .tick{padding:9px 0}
+    .tick i{width:13px}
+    .tick[aria-current=step] i{width:18px}
+    .tick b{font-size:9px;letter-spacing:.04em}
+    .conteudo{padding:20px 17px 0}
+    .row{gap:0}
     .nav{position:sticky;bottom:0;background:var(--bg);
          padding:14px 0 calc(14px + env(safe-area-inset-bottom));
          border-top:1px solid var(--line-soft);margin-top:20px}
     .rodape{padding-bottom:14px}
+  }
+
+  /* Tela muito estreita (iPhone SE de pé, 320px): o trilho fica no limite do
+     que dá para tocar, e o conteúdo passa a mandar. */
+  @media (max-width:360px){
+    .painel{grid-template-columns:38px 1fr}
+    .conteudo{padding:18px 14px 0}
+    .tick b{display:none}
   }
 </style>
 </head>
