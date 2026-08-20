@@ -71,6 +71,43 @@ tão boa quanto aceitar.
 
 ---
 
+## O sistema visual
+
+Direção vinda do Claude Design: **formulário como instrumento**. Vale conhecer
+antes de mexer, porque cada peça carrega uma decisão.
+
+| | |
+|---|---|
+| **Papel quente** | `#e9e7e2` na página, `#f5f3ee` no painel. Não é branco: um formulário de 10 minutos é leitura, e branco puro cansa. |
+| **Régua vertical** | Os traços à esquerda são as 11 etapas. O ativo é mais longo e ganha o número. Clicável **só para trás** — pular adiante saltaria a validação. |
+| **Duas vozes tipográficas** | Monoespaçada para o que é *medida* (etapa, rótulo, valor digitado). System-ui para o que é *fala* (pergunta e explicação). |
+| **Campo como linha** | Entrada de texto é um fio, não uma caixa. Caixa dentro de painel é caixa dentro de caixa. |
+| **Azul profundo** | `#2c527a`, 7,3:1 sobre o papel. Só o botão primário e os acentos o usam. |
+
+No celular a régua vira faixa horizontal e perde os números: a linha
+`ETAPA 03 / 11` já diz onde a pessoa está, e 64px de trilho custam caro numa
+tela de 375.
+
+**Não use `.card` para agrupar.** O painel já é o cartão; bloco interno separa
+por espaço e por um fio. Cartão dentro de cartão é o erro que o craft floor
+chama de *nested cards are always wrong*.
+
+**Rótulo em caixa-alta tem que ser curto.** Acima de ~20 caracteres a palavra
+perde a forma que a torna legível — é por isso que "O que da sua experiência
+sustenta essa transição?" virou "O que sustenta", com a pergunta inteira na
+dica abaixo.
+
+### Verificação
+
+```bash
+node .agents/skills/impeccable/scripts/detect.mjs --json index.html
+```
+
+Zero achados hoje. O detector precisa das dependências em `node_modules` para
+rodar completo — sem elas ele subconta e parece limpo.
+
+---
+
 ## Detalhes de implementação que importam
 
 - **Estado no `localStorage`.** São 10 minutos de formulário no celular; sem

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Radar de Vagas — Cadastro</title>
 <meta name="description" content="Cadastro do Radar de Vagas: as respostas aqui calibram a busca automática de vagas feita para você.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='12' fill='none' stroke='%231a62d6' stroke-width='3'/%3E%3Ccircle cx='16' cy='16' r='4' fill='%231a62d6'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='12' fill='none' stroke='%232c527a' stroke-width='3'/%3E%3Ccircle cx='16' cy='16' r='4' fill='%232c527a'/%3E%3C/svg%3E">
 
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://hasman-dev.github.io/radar-de-vagas-intake/">
@@ -15,144 +15,209 @@
 <meta name="twitter:card" content="summary">
 <meta name="color-scheme" content="light dark">
 <style>
+  /* Radar de Vagas — "formulário como instrumento".
+     Papel quente, régua vertical de etapas, micro-rótulos monoespaçados e
+     campo como linha, não caixa. A monoespaçada carrega o que é medida
+     (etapa, rótulo, valor digitado); a system-ui carrega o que é fala
+     (pergunta e explicação). */
   :root{
-    --bg:#f6f7f9; --card:#ffffff; --fg:#14181f; --muted:#5b6472; --line:#e2e6ec;
-    --accent:#1a62d6; --accent-fg:#ffffff; --accent-soft:#e8f0fe;
-    --ok:#127a4b; --ok-soft:#e4f5ec; --warn:#8a5300; --warn-soft:#fdf1dc;
-    --radius:14px;
+    --papel:#e9e7e2; --bg:#f5f3ee; --ink:#232a33; --muted:#56606c;
+    --accent:#2c527a; --acc-text:#f5f3ee;
+    --line:rgba(35,42,51,.35); --line-soft:rgba(35,42,51,.18);
+    --accent-soft:rgba(44,82,122,.07);
+    --erro:#8c2f21;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
   }
   @media (prefers-color-scheme:dark){
     :root{
-      --bg:#0e1116; --card:#161b22; --fg:#e6edf3; --muted:#9aa5b1; --line:#262d36;
-      --accent:#4d90ff; --accent-fg:#08111f; --accent-soft:#16243d;
-      --ok:#4ad295; --ok-soft:#10261c; --warn:#e5b567; --warn-soft:#2a2113;
+      --papel:#101318; --bg:#14181e; --ink:#e8e6e0; --muted:#a3adb9;
+      --accent:#9cc0e4; --acc-text:#14181e;
+      --line:rgba(232,230,224,.35); --line-soft:rgba(232,230,224,.16);
+      --accent-soft:rgba(156,192,228,.1);
+      --erro:#e8907f;
     }
   }
   *{box-sizing:border-box}
-  ::selection{background:var(--accent);color:var(--accent-fg)}
-  :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+  ::selection{background:var(--accent);color:var(--acc-text)}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   html,body{margin:0;padding:0}
   body{
-    background:var(--bg); color:var(--fg);
-    font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    background:var(--papel); color:var(--ink);
+    font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;
     -webkit-font-smoothing:antialiased;
-    padding:0 0 calc(112px + env(safe-area-inset-bottom));
     caret-color:var(--accent); accent-color:var(--accent);
   }
-  .wrap{max-width:680px;margin:0 auto;padding:0 18px}
 
-  header.top{
-    position:sticky;top:0;z-index:20;background:var(--bg);
-    border-bottom:1px solid var(--line);padding:14px 0 10px;
+  /* ---- painel + régua ---------------------------------------------- */
+  .painel{
+    max-width:760px;margin:34px auto;background:var(--bg);
+    border:1px solid var(--line-soft);border-radius:10px;
+    display:grid;grid-template-columns:64px 1fr;min-height:calc(100vh - 68px);
   }
-  .brand{display:flex;align-items:center;gap:10px;font-weight:650;letter-spacing:-.01em}
-  .dot{width:10px;height:10px;border-radius:50%;background:var(--accent);
-       box-shadow:0 0 0 4px var(--accent-soft);flex:none}
-  .brand small{font-weight:450;color:var(--muted);margin-left:auto;font-size:13px}
-  .bar{height:4px;background:var(--line);border-radius:99px;margin-top:12px;overflow:hidden}
-  .bar > i{display:block;height:100%;width:100%;background:var(--accent);
-           border-radius:99px;transform:scaleX(0);transform-origin:left center;
-           transition:transform .35s cubic-bezier(.4,0,.2,1)}
-  @media (prefers-reduced-motion:reduce){
-    .bar > i,.step{transition:none;animation:none}
+  .regua{
+    border-right:1px solid var(--line-soft);padding:22px 0;
+    display:flex;flex-direction:column;align-items:center;gap:0;
   }
+  .selo{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--accent);
+        display:grid;place-items:center;margin-bottom:20px;flex:none}
+  .selo::after{content:"";width:11px;height:1.5px;background:var(--accent);
+               transform:rotate(-45deg)}
+  .tick{appearance:none;border:0;background:none;padding:11px 0;cursor:pointer;
+        display:flex;flex-direction:column;align-items:center;gap:5px;font-family:var(--mono)}
+  .tick i{display:block;width:16px;height:1.5px;background:var(--line);transition:.18s}
+  .tick b{font-size:10px;font-weight:500;color:var(--accent);letter-spacing:.06em;
+          opacity:0;transition:.18s;line-height:1}
+  .tick:hover i{background:var(--accent)}
+  .tick[aria-current=step] i{width:22px;height:2px;background:var(--accent)}
+  .tick[aria-current=step] b{opacity:1}
+  .tick[disabled]{cursor:default}
+  .tick[disabled]:hover i{background:var(--line)}
 
-  main{padding-top:30px}
-  .step{display:none;animation:in .3s ease}
-  .step.on{display:block}
-  @keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .conteudo{padding:24px 30px 0;display:flex;flex-direction:column;min-width:0}
+  .corpo{flex:1}
 
-  h1{font-size:26px;line-height:1.25;letter-spacing:-.02em;margin:0 0 10px}
-  h2{font-size:16px;margin:26px 0 10px;letter-spacing:-.01em}
-  p.lead{color:var(--muted);margin:0 0 22px}
-  p.hint{color:var(--muted);font-size:14px;margin:6px 0 0}
+  /* ---- tipografia --------------------------------------------------- */
+  .etapa{font-family:var(--mono);font-size:12px;letter-spacing:.14em;
+         color:var(--accent);text-transform:uppercase;margin:0 0 18px}
+  h1{font-size:27px;line-height:1.22;letter-spacing:-.02em;font-weight:600;
+     margin:0 0 12px;max-width:22ch}
+  h2{font-size:15px;margin:26px 0 10px;letter-spacing:-.01em;font-weight:600}
+  p.lead{color:var(--muted);margin:0 0 24px;max-width:52ch;font-size:15px}
+  p.hint{color:var(--muted);font-size:13.5px;margin:8px 0 0;max-width:52ch}
 
-  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-        padding:18px;margin-bottom:14px}
-
-  label.f{display:block;margin:0 0 14px}
-  label.f > span{display:block;font-size:14px;font-weight:600;margin-bottom:6px}
-  label.f > span em{font-style:normal;font-weight:450;color:var(--muted)}
-  input[type=text],input[type=email],input[type=tel],input[type=url],select,textarea{
-    width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:10px;
-    background:var(--bg);color:var(--fg);font:inherit;font-size:16px;
+  /* ---- campos: linha, não caixa ------------------------------------- */
+  label.f{display:block;margin:0 0 20px}
+  label.f > span, .rot{
+    display:block;font-family:var(--mono);font-size:12px;letter-spacing:.1em;
+    text-transform:uppercase;color:var(--muted);margin-bottom:7px;font-weight:400}
+  label.f > span em{font-style:normal;text-transform:none;letter-spacing:0;
+                    font-family:system-ui,sans-serif;font-size:12.5px}
+  input[type=text],input[type=email],input[type=tel],input[type=url],select{
+    width:100%;padding:7px 2px;border:0;border-bottom:1.5px solid var(--line);
+    background:none;color:var(--ink);font-family:var(--mono);font-size:16px;
+    border-radius:0;transition:border-color .15s;
   }
-  textarea{resize:vertical;min-height:96px;line-height:1.5}
-  input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
-  .row{display:flex;gap:12px;flex-wrap:wrap}
-  .row > *{flex:1 1 200px;min-width:0}
+  input:focus,select:focus{border-bottom-color:var(--accent);outline:none}
+  input::placeholder{color:var(--muted);opacity:.55}
+  select{padding-left:0}
+  textarea{
+    width:100%;padding:12px 13px;border:1px solid var(--line-soft);border-radius:8px;
+    background:none;color:var(--ink);font-family:var(--mono);font-size:15px;
+    line-height:1.5;resize:vertical;min-height:104px;transition:border-color .15s;
+  }
+  textarea:focus{border-color:var(--accent);outline:none}
+  .row{display:flex;gap:22px;flex-wrap:wrap}
+  .row > *{flex:1 1 210px;min-width:0}
 
-  .opt{display:flex;gap:11px;align-items:flex-start;padding:12px 14px;border:1px solid var(--line);
-       border-radius:11px;margin-bottom:8px;cursor:pointer;background:var(--card);transition:.15s}
+  /* ---- opções e chips ----------------------------------------------- */
+  .opt{display:flex;gap:11px;align-items:flex-start;padding:13px 15px;
+       border:1px solid var(--line-soft);border-radius:8px;margin-bottom:9px;
+       cursor:pointer;transition:.15s}
   .opt:hover{border-color:var(--accent)}
-  .opt input{margin:2px 0 0;accent-color:var(--accent);width:18px;height:18px;flex:none}
+  .opt input{margin:2px 0 0;width:17px;height:17px;flex:none}
   .opt b{display:block;font-size:15px;font-weight:600}
-  .opt small{color:var(--muted);font-size:13.5px;display:block;margin-top:2px}
+  .opt small{color:var(--muted);font-size:13.5px;display:block;margin-top:3px}
   .opt.sel{border-color:var(--accent);background:var(--accent-soft)}
 
-  .chips{display:flex;flex-wrap:wrap;gap:8px}
-  .chip{border:1px solid var(--line);background:var(--card);color:var(--fg);
-        padding:8px 13px;border-radius:99px;font-size:14px;cursor:pointer;transition:.15s;font-family:inherit}
+  .chips{display:flex;flex-wrap:wrap;gap:9px}
+  .chip{border:1px solid var(--line-soft);background:none;color:var(--ink);
+        padding:9px 14px;border-radius:8px;font:inherit;font-size:14.5px;
+        cursor:pointer;transition:.15s}
   .chip:hover{border-color:var(--accent)}
-  .chip[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--accent-fg);font-weight:600}
+  .chip[aria-pressed=true]{border-color:var(--accent);background:var(--accent-soft);
+                           font-weight:600}
+  .chip[aria-pressed=true]::before{content:"✕ ";color:var(--accent);font-weight:400}
 
-  .cargo{border:1px solid var(--line);border-radius:11px;padding:14px;margin-bottom:10px;background:var(--card)}
-  .cargo .t{font-weight:650;font-size:16px;margin-bottom:2px}
-  .cargo .por{color:var(--muted);font-size:14px;margin-bottom:10px}
-  .cargo .acts{display:flex;gap:8px}
-  .cargo.no{opacity:.5}
+  /* O painel já é o cartão. Bloco interno separa por espaço e por um fio, não
+     por outra caixa: cartão dentro de cartão é o erro que o craft floor chama
+     de "nested cards are always wrong". */
+  .card{margin:0 0 26px}
+  .card + .card{border-top:1px solid var(--line-soft);padding-top:22px}
+  .card > h2:first-child{margin-top:0}
 
-  .nav{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);
-       padding:12px 18px calc(12px + env(safe-area-inset-bottom));z-index:30}
-  .nav .wrap{display:flex;gap:10px;align-items:center;padding:0 18px}
-  button{font:inherit;font-size:15px;font-weight:600;border-radius:10px;padding:12px 20px;
-         border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer;transition:.15s}
+  .cargo{border:1px solid var(--line-soft);border-radius:8px;padding:15px;margin-bottom:10px}
+  .cargo .t{font-weight:600;font-size:16px;margin-bottom:3px}
+  .cargo .por{color:var(--muted);font-size:14px;margin-bottom:11px}
+  .cargo .acts{display:flex;gap:9px}
+  .cargo.no{opacity:.45}
+
+  /* ---- navegação ----------------------------------------------------- */
+  .nav{padding:20px 0 12px;display:flex;gap:10px;align-items:center}
+  button{font:inherit;font-size:15px;font-weight:600;border-radius:6px;
+         padding:13px 22px;border:1px solid var(--line-soft);background:none;
+         color:var(--ink);cursor:pointer;transition:.15s}
   button:hover{border-color:var(--accent)}
-  button.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-fg);flex:1}
-  button.primary:hover{filter:brightness(1.08)}
+  button.primary{background:var(--accent);border-color:var(--accent);
+                 color:var(--acc-text);flex:1}
+  button.primary:hover{filter:brightness(1.1)}
   button:disabled{opacity:.5;cursor:not-allowed}
-  button.ghost{padding:12px 16px}
-  .nav small{color:var(--muted);font-size:13px;margin-left:auto;white-space:nowrap}
+  .rodape{font-family:var(--mono);font-size:12px;color:var(--muted);
+          text-align:center;padding:0 0 22px;letter-spacing:.02em}
 
-  .note{background:var(--accent-soft);color:var(--fg);padding:13px 15px;
-        border-radius:11px;font-size:14.5px;margin:0 0 18px}
-  .note.warn{background:var(--warn-soft)}
-  .note.ok{background:var(--ok-soft)}
-  .err{color:#b42318;font-size:14px;margin-top:8px;font-weight:500}
-  @media (prefers-color-scheme:dark){.err{color:#ff8a80}}
-
-  .add{display:flex;gap:8px;margin-top:8px}
+  /* ---- blocos auxiliares ---------------------------------------------- */
+  .note{background:var(--accent-soft);padding:14px 16px;border-radius:8px;
+        font-size:14.5px;margin:0 0 20px;max-width:56ch}
+  .err{color:var(--erro);font-size:14px;margin-top:10px;font-weight:500;
+       font-family:var(--mono)}
+  .add{display:flex;gap:9px;margin-top:10px;align-items:flex-end}
   .add input{flex:1}
-  .add button{padding:11px 16px;flex:none}
-  ul.list{list-style:none;padding:0;margin:10px 0 0;display:flex;flex-direction:column;gap:6px}
-  ul.list li{display:flex;align-items:center;gap:10px;background:var(--bg);border:1px solid var(--line);
-             border-radius:9px;padding:9px 12px;font-size:15px}
-  ul.list li button{margin-left:auto;padding:2px 9px;font-size:18px;line-height:1;border:none;
-                    background:none;color:var(--muted);font-weight:400}
-  ul.list li button:hover{color:#b42318}
+  .add button{padding:10px 16px;flex:none;font-size:14px}
+  ul.list{list-style:none;padding:0;margin:12px 0 0;display:flex;
+          flex-direction:column;gap:7px}
+  ul.list li{display:flex;align-items:center;gap:10px;font-family:var(--mono);
+             font-size:14px;border-bottom:1px solid var(--line-soft);padding:7px 2px}
+  ul.list li button{margin-left:auto;padding:0 6px;font-size:16px;line-height:1;
+                    border:none;background:none;color:var(--muted);font-weight:400}
+  ul.list li button:hover{color:var(--erro)}
+  .cond{margin-top:14px;padding-left:16px;border-left:1px solid var(--line-soft)}
 
-  .cond{margin-top:10px;padding-left:14px;border-left:2px solid var(--line)}
-  .done{text-align:center;padding:30px 0}
-  .done .big{font-size:46px;line-height:1;margin-bottom:14px}
-  .proto{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:19px;font-weight:650;
-         background:var(--bg);border:1px dashed var(--line);border-radius:10px;padding:12px;margin:14px 0}
-  .acts-final{display:flex;flex-direction:column;gap:9px;margin-top:20px}
-  .acts-final button,.acts-final a{width:100%;text-align:center;text-decoration:none;display:block}
-  .acts-final a{padding:12px 20px;border-radius:10px;border:1px solid var(--line);
-                background:var(--card);color:var(--fg);font-weight:600;font-size:15px}
-  footer{color:var(--muted);font-size:12.5px;text-align:center;padding:24px 18px 0;line-height:1.6}
+  .done{padding:8px 0 30px}
+  .proto{font-family:var(--mono);font-size:19px;letter-spacing:.08em;
+         color:var(--accent);padding:14px 0;border-top:1px solid var(--line-soft);
+         border-bottom:1px solid var(--line-soft);margin:18px 0;text-align:center}
+  .acts-final{display:flex;flex-direction:column;gap:10px;margin-top:22px}
+  .acts-final button,.acts-final a{width:100%;text-align:center;
+    text-decoration:none;display:block}
+  .acts-final a{padding:13px 22px;border-radius:6px;border:1px solid var(--line-soft);
+                color:var(--ink);font-weight:600;font-size:15px}
+
+  .step{display:none}
+  .step.on{display:block;animation:entra .28s cubic-bezier(.2,.7,.3,1)}
+  @keyframes entra{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){
+    .step.on{animation:none}
+    .tick i,.tick b,input,textarea{transition:none}
+  }
+
+  /* No celular a régua vira uma faixa fina: a linha "ETAPA 03 / 11" já diz
+     onde a pessoa está, e 64px de trilho custam caro numa tela de 375. */
+  @media (max-width:640px){
+    .painel{margin:0;border:0;border-radius:0;grid-template-columns:1fr;
+            min-height:100vh}
+    .regua{flex-direction:row;border-right:0;border-bottom:1px solid var(--line-soft);
+           padding:12px 16px;gap:0;overflow-x:auto;justify-content:flex-start}
+    .selo{margin:0 12px 0 0}
+    .tick{padding:0 6px}
+    .tick i{width:14px}
+    .tick[aria-current=step] i{width:20px}
+    .tick b{display:none}
+    .conteudo{padding:22px 20px 0}
+    h1{font-size:24px}
+    .nav{position:sticky;bottom:0;background:var(--bg);
+         padding:14px 0 calc(14px + env(safe-area-inset-bottom));
+         border-top:1px solid var(--line-soft);margin-top:20px}
+    .rodape{padding-bottom:14px}
+  }
 </style>
 </head>
 <body>
 
-<header class="top">
-  <div class="wrap">
-    <div class="brand"><span class="dot"></span> Radar de Vagas <small id="passo">1 / 10</small></div>
-    <div class="bar"><i id="prog"></i></div>
-  </div>
-</header>
+<div class="painel">
+  <nav class="regua" id="regua" aria-label="Etapas do cadastro"></nav>
 
-<main class="wrap">
+  <div class="conteudo">
+    <p class="etapa" id="etapa">Radar de Vagas</p>
+    <main class="corpo">
 
   <!-- 1 ─────────────────────────────────────────────── abertura -->
   <section class="step on" data-step="0">
@@ -214,7 +279,7 @@
       principalmente dos seus dois últimos empregos.</p>
 
     <div class="card">
-      <label class="f"><span>Cole o texto do seu currículo <em>ou envie o PDF depois</em></span>
+      <label class="f"><span>Currículo <em>cole o texto, ou envie o PDF depois</em></span>
         <textarea id="cv_texto" rows="8" placeholder="Abra o PDF, selecione tudo (Ctrl+A), copie e cole aqui.
 Não precisa formatar — só o texto já serve."></textarea></label>
       <label class="opt" style="margin-bottom:0">
@@ -228,19 +293,17 @@ Não precisa formatar — só o texto já serve."></textarea></label>
       no primeiro emprego, preencha só o primeiro bloco.</p>
 
     <div class="card">
-      <p style="margin:0 0 12px;font-size:13px;font-weight:700;color:var(--muted);
-                letter-spacing:.04em;text-transform:uppercase">Emprego atual ou mais recente</p>
+      <p class="rot" style="margin:0 0 14px">Emprego atual</p>
       <div class="row">
         <label class="f"><span>Empresa</span><input type="text" id="e1_empresa"></label>
         <label class="f"><span>Cargo</span><input type="text" id="e1_cargo"></label>
       </div>
-      <label class="f" style="margin-bottom:0"><span>Período <em>ex.: 07/2017 – 02/2026</em></span>
+      <label class="f" style="margin-bottom:0"><span>Período</span>
         <input type="text" id="e1_periodo"></label>
     </div>
 
     <div class="card">
-      <p style="margin:0 0 12px;font-size:13px;font-weight:700;color:var(--muted);
-                letter-spacing:.04em;text-transform:uppercase">Emprego anterior</p>
+      <p class="rot" style="margin:0 0 14px">Emprego anterior</p>
       <div class="row">
         <label class="f"><span>Empresa</span><input type="text" id="e2_empresa"></label>
         <label class="f"><span>Cargo</span><input type="text" id="e2_cargo"></label>
@@ -249,7 +312,7 @@ Não precisa formatar — só o texto já serve."></textarea></label>
         <input type="text" id="e2_periodo"></label>
     </div>
 
-    <label class="f"><span>Anos de experiência somando tudo</span>
+    <label class="f"><span>Anos de experiência</span>
       <input type="text" id="anos" inputmode="numeric" placeholder="13" style="max-width:140px"></label>
     <div class="err" id="e2" role="alert" tabindex="-1"></div>
   </section>
@@ -299,7 +362,7 @@ Não precisa formatar — só o texto já serve."></textarea></label>
         <label class="f"><span>Indo para</span>
           <input type="text" id="mov_para" placeholder="ex.: Product Manager"></label>
       </div>
-      <label class="f"><span>O que da sua experiência sustenta essa transição? <em>opcional</em></span>
+      <label class="f"><span>O que sustenta <em>opcional</em></span>
         <textarea id="mov_obs" rows="3" placeholder="O que você já fez que se parece com o cargo novo."></textarea></label>
     </div>
     <div class="err" id="e5" role="alert" tabindex="-1"></div>
@@ -396,7 +459,7 @@ Não precisa formatar — só o texto já serve."></textarea></label>
 
     <div class="card">
       <div class="row">
-        <label class="f" style="margin-bottom:0"><span>Salário mínimo aceitável <em>mensal, opcional</em></span>
+        <label class="f" style="margin-bottom:0"><span>Piso salarial <em>mensal, opcional</em></span>
           <input type="text" id="salario" inputmode="numeric" placeholder="R$ 15.000"></label>
         <label class="f" style="margin-bottom:0"><span>Seu inglês</span>
           <select id="ingles">
@@ -477,18 +540,18 @@ Não precisa formatar — só o texto já serve."></textarea></label>
     </div>
   </section>
 
-  <footer>
-    Radar de Vagas · seus dados ficam neste navegador até você enviar<br>
-    <button type="button" class="chip" style="margin-top:10px" onclick="limpar()">Apagar e recomeçar</button>
-  </footer>
-</main>
+    </main>
 
-<nav class="nav" id="nav">
-  <div class="wrap">
-    <button type="button" class="ghost" id="btn_voltar" onclick="ir(-1)">Voltar</button>
-    <button type="button" class="primary" id="btn_avancar" onclick="ir(1)">Começar</button>
+    <div class="nav" id="nav">
+      <button type="button" id="btn_voltar" onclick="ir(-1)">Voltar</button>
+      <button type="button" class="primary" id="btn_avancar" onclick="ir(1)">Começar</button>
+    </div>
+    <p class="rodape">dá para pausar e voltar &mdash; nada se perde ·
+      <button type="button" onclick="limpar()"
+        style="border:0;padding:0;font:inherit;color:var(--muted);text-decoration:underline;cursor:pointer">apagar tudo</button>
+    </p>
   </div>
-</nav>
+</div>
 
 <script>
 /* ───────────────────────── configuração ─────────────────────────
@@ -816,15 +879,46 @@ function ir(delta){
   window.scrollTo({top: 0, behavior: "instant"});
 }
 
+// Cada etapa tem nome, não só número. O rótulo aparece na linha superior e é
+// o que diz à pessoa o que ela está respondendo agora — o número sozinho
+// informa progresso, não assunto.
+const ETAPAS = ["INÍCIO", "IDENTIFICAÇÃO", "CURRÍCULO", "ALVO", "SENIORIDADE",
+                "MOVIMENTO", "LOCAL", "EMPRESAS", "RESTRIÇÕES",
+                "AJUSTES", "REVISÃO"];
+
+function montarRegua(){
+  const el = document.getElementById("regua");
+  el.innerHTML = '<span class="selo" aria-hidden="true"></span>';
+  ETAPAS.forEach((rotulo, i) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "tick";
+    b.innerHTML = `<i></i><b>${String(i + 1).padStart(2, "0")}</b>`;
+    b.setAttribute("aria-label", `Etapa ${i + 1}: ${rotulo}`);
+    // Só deixa voltar. Pular para frente saltaria a validação e deixaria
+    // o cadastro chegar incompleto do outro lado.
+    b.onclick = () => { if(i < passo){ passo = i; render(); window.scrollTo(0,0); } };
+    el.appendChild(b);
+  });
+}
+
 function render(){
   document.querySelectorAll(".step").forEach(s =>
     s.classList.toggle("on", +s.dataset.step === passo));
 
   const fim = passo === 11;
   document.getElementById("nav").style.display = fim ? "none" : "";
-  document.getElementById("passo").textContent = fim ? "" : `${passo + 1} / ${TOTAL}`;
-  document.getElementById("prog").style.transform = `scaleX(${passo / TOTAL})`;
-  document.getElementById("btn_voltar").style.visibility = (passo === 0 || fim) ? "hidden" : "";
+  document.getElementById("etapa").textContent = fim
+    ? "CADASTRO ENVIADO"
+    : `ETAPA ${String(passo + 1).padStart(2, "0")} / ${TOTAL} · ${ETAPAS[passo]}`;
+
+  document.querySelectorAll("#regua .tick").forEach((t, i) => {
+    if(i === passo) t.setAttribute("aria-current", "step");
+    else t.removeAttribute("aria-current");
+    t.disabled = i > passo;
+  });
+
+  document.getElementById("btn_voltar").style.display = (passo === 0 || fim) ? "none" : "";
   document.getElementById("btn_avancar").textContent =
     passo === 0 ? "Começar" : passo === 10 ? "Enviar cadastro" : "Continuar";
 
@@ -994,6 +1088,7 @@ function prefill(){
 /* ───────────────────────── boot ───────────────────────── */
 carregar();
 prefill();
+montarRegua();
 
 liga("nome",     () => D.pessoa.nome,     v => D.pessoa.nome = v);
 liga("email",    () => D.pessoa.email,    v => D.pessoa.email = v);
