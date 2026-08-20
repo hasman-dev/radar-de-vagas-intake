@@ -60,7 +60,7 @@ tão boa quanto aceitar.
 | 0 | Abertura | — |
 | 1 | Quem é você | `situacao` define o corte de score e a cadência |
 | 2 | Currículo e os 2 últimos empregos | Base da análise dos cargos; o cargo atual vira cargo adjacente |
-| 3 | Cargos-alvo | As consultas enviadas aos portais |
+| 3 | Cargos-alvo | Pergunta primeiro **quais cargos a própria pessoa buscaria**, depois mostra a leitura do currículo. A lista dela vira consulta nos portais mas **não** pontua: se ela procura com o título errado — que é o caso que a pergunta existe para revelar — dar peso a isso ensinaria o motor a errar junto. A divergência aparece no `perfil.py --explicar`. |
 | 4 | Senioridade | Bônus e penalidade por nível no título |
 | 5 | Movimento de carreira | Destino × origem, e se o assunto é exigido |
 | 6 | Modalidade e local | Abrangência **por modalidade** — remoto e presencial quase nunca têm o mesmo alcance |

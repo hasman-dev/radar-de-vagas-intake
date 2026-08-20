@@ -320,6 +320,19 @@ Não precisa formatar — só o texto já serve."></textarea></label>
   <!-- 4 ─────────────────────────────────────────────── cargos -->
   <section class="step" data-step="3">
     <h1>Os cargos que vamos buscar</h1>
+
+    <div class="card">
+      <h2 style="margin-top:0">Que cargos você mesmo buscaria?</h2>
+      <label class="f" style="margin-bottom:0">
+        <span>Sua lista <em>opcional</em></span>
+        <textarea id="cargos_proprios" rows="2"
+          placeholder="Escreva como digitaria num portal de vagas."></textarea></label>
+      <p class="hint">Responda antes de olhar a minha leitura, logo abaixo. A distância
+        entre as duas listas diz muito: se batem, você conhece o seu mercado; se não,
+        provavelmente você está procurando com as palavras erradas — e é por isso que
+        a vaga certa não aparece.</p>
+    </div>
+
     <p class="lead" id="cargos_lead">Estes são os três cargos que melhor se encaixam no seu
       histórico. Recuse o que não fizer sentido e acrescente o que faltar.</p>
 
@@ -629,7 +642,7 @@ const TOTAL = 11;                       // 0..10 preenchíveis; 11 é o fim
 let D = {
   versao: "1.0", protocolo: "",
   pessoa: {}, cv: {emprego_1:{}, emprego_2:{}},
-  cargos: {sugeridos: [], adicionais: []},
+  cargos: {sugeridos: [], adicionais: [], proprios: []},
   senioridade: [], movimento: {},
   trabalho: {modalidades: [], abrangencia: {}},
   empresas: {alvo: [], segmentos: [], porte: [], evitar: []},
@@ -753,8 +766,8 @@ function pintarSugeridos(){
   el.innerHTML = "";
   if(!D.cargos.sugeridos.length){
     document.getElementById("cargos_lead").textContent =
-      "Ainda não li o seu currículo, então não tenho sugestão pronta. Escreva abaixo os " +
-      "títulos que você quer buscar — depois da análise eu volto com ajustes.";
+      "Ainda não li o seu currículo, então a sua lista acima é o ponto de partida. " +
+      "Depois da análise eu volto com a minha leitura, e você aceita ou recusa cada cargo.";
     return;
   }
   D.cargos.sugeridos.forEach((c, i) => {
@@ -938,6 +951,7 @@ function pintarResumo(){
   const linhas = [
     ["Nome", D.pessoa.nome],
     ["Cargos buscados", cargos.join(" · ")],
+    ["Você buscaria", (D.cargos.proprios || []).join(" · ")],
     ["Senioridade", D.senioridade.map(rotSen).join(", ")],
     ["Movimento", mov],
     ["Trabalho", mods.join(" · ")],
@@ -1097,6 +1111,8 @@ liga("linkedin", () => D.pessoa.linkedin, v => D.pessoa.linkedin = v);
 liga("cidade",   () => D.pessoa.cidade,   v => D.pessoa.cidade = v);
 liga("uf",       () => D.pessoa.uf,       v => D.pessoa.uf = v.toUpperCase());
 
+liga("cargos_proprios", () => (D.cargos.proprios || []).join(", "),
+     v => D.cargos.proprios = v.split(/[,;\n]+/).map(x => x.trim()).filter(Boolean));
 liga("cv_texto",   () => D.cv.texto, v => D.cv.texto = v);
 liga("e1_empresa", () => D.cv.emprego_1.empresa, v => D.cv.emprego_1.empresa = v);
 liga("e1_cargo",   () => D.cv.emprego_1.cargo,   v => D.cv.emprego_1.cargo = v);
