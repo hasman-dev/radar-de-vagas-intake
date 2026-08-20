@@ -5,28 +5,39 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Radar de Vagas — Cadastro</title>
 <meta name="description" content="Cadastro do Radar de Vagas: as respostas aqui calibram a busca automática de vagas feita para você.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='12' fill='none' stroke='%231a62d6' stroke-width='3'/%3E%3Ccircle cx='16' cy='16' r='4' fill='%231a62d6'/%3E%3C/svg%3E">
+
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://hasman-dev.github.io/radar-de-vagas-intake/">
+<meta property="og:title" content="Radar de Vagas — Cadastro">
+<meta property="og:description" content="As respostas aqui calibram a busca automática de vagas feita para você. Leva de 6 a 10 minutos.">
+<meta property="og:locale" content="pt_BR">
+<meta name="twitter:card" content="summary">
 <meta name="color-scheme" content="light dark">
 <style>
   :root{
     --bg:#f6f7f9; --card:#ffffff; --fg:#14181f; --muted:#5b6472; --line:#e2e6ec;
-    --accent:#1f6feb; --accent-fg:#ffffff; --accent-soft:#e8f0fe;
+    --accent:#1a62d6; --accent-fg:#ffffff; --accent-soft:#e8f0fe;
     --ok:#127a4b; --ok-soft:#e4f5ec; --warn:#8a5300; --warn-soft:#fdf1dc;
-    --radius:14px; --shadow:0 1px 2px rgba(16,24,40,.06),0 8px 24px rgba(16,24,40,.06);
+    --radius:14px;
   }
   @media (prefers-color-scheme:dark){
     :root{
       --bg:#0e1116; --card:#161b22; --fg:#e6edf3; --muted:#9aa5b1; --line:#262d36;
       --accent:#4d90ff; --accent-fg:#08111f; --accent-soft:#16243d;
       --ok:#4ad295; --ok-soft:#10261c; --warn:#e5b567; --warn-soft:#2a2113;
-      --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.3);
     }
   }
   *{box-sizing:border-box}
+  ::selection{background:var(--accent);color:var(--accent-fg)}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
   html,body{margin:0;padding:0}
   body{
     background:var(--bg); color:var(--fg);
     font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-    -webkit-font-smoothing:antialiased; padding:0 0 96px;
+    -webkit-font-smoothing:antialiased;
+    padding:0 0 calc(112px + env(safe-area-inset-bottom));
+    caret-color:var(--accent); accent-color:var(--accent);
   }
   .wrap{max-width:680px;margin:0 auto;padding:0 18px}
 
@@ -39,23 +50,25 @@
        box-shadow:0 0 0 4px var(--accent-soft);flex:none}
   .brand small{font-weight:450;color:var(--muted);margin-left:auto;font-size:13px}
   .bar{height:4px;background:var(--line);border-radius:99px;margin-top:12px;overflow:hidden}
-  .bar > i{display:block;height:100%;width:0;background:var(--accent);
-           border-radius:99px;transition:width .35s cubic-bezier(.4,0,.2,1)}
+  .bar > i{display:block;height:100%;width:100%;background:var(--accent);
+           border-radius:99px;transform:scaleX(0);transform-origin:left center;
+           transition:transform .35s cubic-bezier(.4,0,.2,1)}
+  @media (prefers-reduced-motion:reduce){
+    .bar > i,.step{transition:none;animation:none}
+  }
 
-  main{padding-top:26px}
+  main{padding-top:30px}
   .step{display:none;animation:in .3s ease}
   .step.on{display:block}
   @keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
-  .eyebrow{font-size:13px;font-weight:600;color:var(--accent);letter-spacing:.02em;
-           text-transform:uppercase;margin:0 0 6px}
   h1{font-size:26px;line-height:1.25;letter-spacing:-.02em;margin:0 0 10px}
   h2{font-size:16px;margin:26px 0 10px;letter-spacing:-.01em}
   p.lead{color:var(--muted);margin:0 0 22px}
   p.hint{color:var(--muted);font-size:14px;margin:6px 0 0}
 
   .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-        padding:18px;box-shadow:var(--shadow);margin-bottom:14px}
+        padding:18px;margin-bottom:14px}
 
   label.f{display:block;margin:0 0 14px}
   label.f > span{display:block;font-size:14px;font-weight:600;margin-bottom:6px}
@@ -101,10 +114,10 @@
   button.ghost{padding:12px 16px}
   .nav small{color:var(--muted);font-size:13px;margin-left:auto;white-space:nowrap}
 
-  .note{border-left:3px solid var(--accent);background:var(--accent-soft);padding:12px 14px;
-        border-radius:0 10px 10px 0;font-size:14.5px;margin:0 0 18px}
-  .note.warn{border-color:var(--warn);background:var(--warn-soft)}
-  .note.ok{border-color:var(--ok);background:var(--ok-soft)}
+  .note{background:var(--accent-soft);color:var(--fg);padding:13px 15px;
+        border-radius:11px;font-size:14.5px;margin:0 0 18px}
+  .note.warn{background:var(--warn-soft)}
+  .note.ok{background:var(--ok-soft)}
   .err{color:#b42318;font-size:14px;margin-top:8px;font-weight:500}
   @media (prefers-color-scheme:dark){.err{color:#ff8a80}}
 
@@ -143,29 +156,27 @@
 
   <!-- 1 ─────────────────────────────────────────────── abertura -->
   <section class="step on" data-step="0">
-    <p class="eyebrow">Antes de começar</p>
     <h1 id="ola">Vamos calibrar a sua busca</h1>
     <p class="lead">A partir daqui, um robô varre os portais de vaga procurando
-      o que se encaixa em você — e te manda só o que passa no filtro, com uma explicação
+      o que se encaixa em você, e te manda só o que passa no filtro, com uma explicação
       de por que passou.</p>
 
     <div class="card">
       <h2 style="margin-top:0">O que acontece depois que você enviar</h2>
       <p style="margin:0 0 10px"><b>1.</b> Eu leio suas respostas e monto o seu perfil de busca.</p>
       <p style="margin:0 0 10px"><b>2.</b> A primeira rodada cria a sua planilha de acompanhamento.</p>
-      <p style="margin:0 0 10px"><b>3.</b> Toda vaga nova chega no seu celular com três botões:
-        <b>boa</b>, <b>não era pra vir</b> e <b>não vou seguir</b>.</p>
-      <p style="margin:0"><b>4.</b> Cada clique seu recalibra o filtro. Em duas semanas o radar
-        é seu, não meu.</p>
+      <p style="margin:0 0 10px"><b>3.</b> As vagas chegam no seu celular, cada uma com três
+        botões: <b>boa</b>, <b>não era pra vir</b> e <b>não vou seguir</b>.</p>
+      <p style="margin:0"><b>4.</b> Cada clique seu recalibra o filtro. Quanto mais você usa,
+        mais o radar fica seu.</p>
     </div>
 
-    <div class="note">Leva de 6 a 10 minutos. Pode fechar e voltar depois —
-      as respostas ficam salvas neste navegador.</div>
+    <div class="note">Leva de 6 a 10 minutos. Pode fechar e voltar depois: as respostas
+      ficam salvas neste navegador.</div>
   </section>
 
   <!-- 2 ─────────────────────────────────────────────── quem é você -->
   <section class="step" data-step="1">
-    <p class="eyebrow">Etapa 1</p>
     <h1>Quem é você</h1>
     <p class="lead">O WhatsApp é por onde as vagas chegam. O LinkedIn é de onde eu tiro
       o contexto que o currículo não conta.</p>
@@ -190,15 +201,14 @@
     </div>
 
     <h2>Como está sua situação hoje?</h2>
-    <p class="hint" style="margin-bottom:10px">Isso calibra o filtro — quem está fora
+    <p class="hint" style="margin-bottom:10px">Isso calibra o filtro. Quem está fora
       recebe um corte mais aberto, porque vaga mediana ainda é entrevista.</p>
     <div id="situacao"></div>
-    <div class="err" id="e1"></div>
+    <div class="err" id="e1" role="alert" tabindex="-1"></div>
   </section>
 
   <!-- 3 ─────────────────────────────────────────────── currículo -->
   <section class="step" data-step="2">
-    <p class="eyebrow">Etapa 2</p>
     <h1>Seu currículo</h1>
     <p class="lead">É daqui que saem os cargos que vou sugerir na próxima etapa —
       principalmente dos seus dois últimos empregos.</p>
@@ -241,12 +251,11 @@ Não precisa formatar — só o texto já serve."></textarea></label>
 
     <label class="f"><span>Anos de experiência somando tudo</span>
       <input type="text" id="anos" inputmode="numeric" placeholder="13" style="max-width:140px"></label>
-    <div class="err" id="e2"></div>
+    <div class="err" id="e2" role="alert" tabindex="-1"></div>
   </section>
 
   <!-- 4 ─────────────────────────────────────────────── cargos -->
   <section class="step" data-step="3">
-    <p class="eyebrow">Etapa 3</p>
     <h1>Os cargos que vamos buscar</h1>
     <p class="lead" id="cargos_lead">Estes são os três cargos que melhor se encaixam no seu
       histórico. Recuse o que não fizer sentido e acrescente o que faltar.</p>
@@ -264,22 +273,20 @@ Não precisa formatar — só o texto já serve."></textarea></label>
       </div>
       <ul class="list" id="cargos_extra"></ul>
     </div>
-    <div class="err" id="e3"></div>
+    <div class="err" id="e3" role="alert" tabindex="-1"></div>
   </section>
 
   <!-- 5 ─────────────────────────────────────────────── senioridade -->
   <section class="step" data-step="4">
-    <p class="eyebrow">Etapa 4</p>
     <h1>Que senioridade você busca</h1>
     <p class="lead">Pode marcar mais de uma. Tudo que ficar de fora é descartado no filtro,
       então prefira marcar a mais.</p>
     <div id="senioridade"></div>
-    <div class="err" id="e4"></div>
+    <div class="err" id="e4" role="alert" tabindex="-1"></div>
   </section>
 
   <!-- 6 ─────────────────────────────────────────────── movimento -->
   <section class="step" data-step="5">
-    <p class="eyebrow">Etapa 5</p>
     <h1>Que movimento é esse</h1>
     <p class="lead">Muda completamente o que conta como vaga boa: transição aceita cargo
       lateral, degrau acima descarta o que você já faz hoje.</p>
@@ -295,12 +302,11 @@ Não precisa formatar — só o texto já serve."></textarea></label>
       <label class="f"><span>O que da sua experiência sustenta essa transição? <em>opcional</em></span>
         <textarea id="mov_obs" rows="3" placeholder="O que você já fez que se parece com o cargo novo."></textarea></label>
     </div>
-    <div class="err" id="e5"></div>
+    <div class="err" id="e5" role="alert" tabindex="-1"></div>
   </section>
 
   <!-- 7 ─────────────────────────────────────────────── modalidade -->
   <section class="step" data-step="6">
-    <p class="eyebrow">Etapa 6</p>
     <h1>Como e onde você trabalha</h1>
     <p class="lead">Marque as modalidades que aceita. Para cada uma, diga até onde vai
       geograficamente — presencial costuma ser bem mais restrito que remoto.</p>
@@ -314,12 +320,11 @@ Não precisa formatar — só o texto já serve."></textarea></label>
 
     <h2>Mudaria de cidade por uma vaga certa?</h2>
     <div id="mudanca"></div>
-    <div class="err" id="e6"></div>
+    <div class="err" id="e6" role="alert" tabindex="-1"></div>
   </section>
 
   <!-- 8 ─────────────────────────────────────────────── empresas alvo -->
   <section class="step" data-step="7">
-    <p class="eyebrow">Etapa 7</p>
     <h1>Onde você quer trabalhar</h1>
     <p class="lead">As empresas que você listar aqui ganham tratamento especial: o robô lê o
       site de carreiras delas direto, e pega a vaga antes de ela chegar nos portais.</p>
@@ -353,7 +358,6 @@ Não precisa formatar — só o texto já serve."></textarea></label>
 
   <!-- 9 ─────────────────────────────────────────────── evitar -->
   <section class="step" data-step="8">
-    <p class="eyebrow">Etapa 8</p>
     <h1>O que não deve chegar até você</h1>
     <p class="lead">Esta é a etapa que mais melhora a qualidade da lista. Vaga filtrada aqui
       nunca ocupa espaço no seu dia.</p>
@@ -361,7 +365,7 @@ Não precisa formatar — só o texto já serve."></textarea></label>
     <div class="card">
       <h2 style="margin-top:0">Empresas a evitar</h2>
       <p class="hint" style="margin:0 0 10px">Uma por linha. Concorrente com cláusula,
-        ex-empregador, consultoria que você não quer — o motivo é opcional e fica só comigo.</p>
+        ex-empregador, consultoria que você não quer. O motivo é opcional e fica só comigo.</p>
       <textarea id="empresas_evitar" rows="4" placeholder="Empresa X — cláusula de não concorrência"></textarea>
     </div>
 
@@ -382,7 +386,6 @@ Não precisa formatar — só o texto já serve."></textarea></label>
 
   <!-- 10 ────────────────────────────────────────────── ajustes finais -->
   <section class="step" data-step="9">
-    <p class="eyebrow">Etapa 9</p>
     <h1>Últimos ajustes</h1>
     <p class="lead">Quatro coisas que decidem se uma vaga boa no papel serve na prática.</p>
 
@@ -424,15 +427,14 @@ Não precisa formatar — só o texto já serve."></textarea></label>
     <div class="card">
       <h2 style="margin-top:0">Como prefere receber</h2>
       <p class="hint" style="margin:0 0 10px">A frequência de entrega faz parte do
-        plano — isto aqui é para eu saber qual se encaixa em você.</p>
+        plano. Isto aqui é para eu saber qual se encaixa em você.</p>
       <div id="cadencia"></div>
     </div>
-    <div class="err" id="e9"></div>
+    <div class="err" id="e9" role="alert" tabindex="-1"></div>
   </section>
 
   <!-- 11 ────────────────────────────────────────────── envio -->
   <section class="step" data-step="10">
-    <p class="eyebrow">Última etapa</p>
     <h1>Pronto para enviar</h1>
     <p class="lead">Confira o resumo, aceite o uso dos dados e envie.</p>
 
@@ -445,7 +447,7 @@ Não precisa formatar — só o texto já serve."></textarea></label>
           sua busca. Não são vendidos nem compartilhados com terceiros. Você pode pedir
           exclusão a qualquer momento e tudo é apagado.</small></span></label>
 
-    <div class="err" id="e10"></div>
+    <div class="err" id="e10" role="alert" tabindex="-1"></div>
   </section>
 
   <!-- 12 ────────────────────────────────────────────── fim -->
@@ -742,7 +744,13 @@ function pintarAbrangencia(){
 function erro(id, msg){
   const el = document.getElementById(id);
   if(el) el.textContent = msg || "";
-  if(msg) window.scrollTo({top: document.body.scrollHeight, behavior: "smooth"});
+  // role="alert" faz o leitor de tela anunciar; o foco atende quem navega por
+  // teclado; e centralizar e melhor que pular para o rodape, que em etapa longa
+  // deixava a mensagem fora da tela.
+  if(msg && el){
+    el.focus({preventScroll: true});
+    el.scrollIntoView({block: "center", behavior: "smooth"});
+  }
   return !msg;
 }
 function valida(p){
@@ -815,7 +823,7 @@ function render(){
   const fim = passo === 11;
   document.getElementById("nav").style.display = fim ? "none" : "";
   document.getElementById("passo").textContent = fim ? "" : `${passo + 1} / ${TOTAL}`;
-  document.getElementById("prog").style.width = ((passo / TOTAL) * 100) + "%";
+  document.getElementById("prog").style.transform = `scaleX(${passo / TOTAL})`;
   document.getElementById("btn_voltar").style.visibility = (passo === 0 || fim) ? "hidden" : "";
   document.getElementById("btn_avancar").textContent =
     passo === 0 ? "Começar" : passo === 10 ? "Enviar cadastro" : "Continuar";
