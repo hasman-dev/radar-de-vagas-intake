@@ -103,6 +103,22 @@ perde a forma que a torna legível — é por isso que "O que da sua experiênci
 sustenta essa transição?" virou "O que sustenta", com a pergunta inteira na
 dica abaixo.
 
+### A capa
+
+A primeira tela não é etapa: fica fora da régua e do contador. Etapa é o que o
+cliente responde; a capa é o que ele lê antes de decidir se vai responder.
+
+A marca fica no alto, como papel timbrado — **não** colada no título. Colada
+ela vira kicker, que o craft floor proíbe sem exceção. E a linha de etapa
+carrega `· RV` no fim, para a marca estar presente em toda tela sem ocupar uma
+linha própria.
+
+**`[hidden]{display:none !important}` é obrigatório.** Sem essa regra o atributo
+`hidden` não funciona em nada que tenha `display` declarado: `.capa{display:flex}`
+vence o `[hidden]{display:none}` do navegador por especificidade, e o elemento
+segue na tela enquanto o JS jura que escondeu. Foi assim que a capa não sumia —
+e o botão do Telegram aparecia mesmo sem a Central ter confirmado o cadastro.
+
 ### Verificação
 
 ```bash

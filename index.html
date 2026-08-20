@@ -38,6 +38,11 @@
     }
   }
   *{box-sizing:border-box}
+  /* Sem isto o atributo `hidden` não funciona em nada que tenha display
+     declarado: `.capa{display:flex}` vence o `[hidden]{display:none}` do
+     navegador por especificidade, e o elemento continua na tela enquanto o
+     JS jura que escondeu. */
+  [hidden]{display:none !important}
   ::selection{background:var(--accent);color:var(--acc-text)}
   :focus-visible{outline:2px solid var(--accent);outline-offset:3px}
   html,body{margin:0;padding:0}
@@ -46,6 +51,25 @@
     font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;
     -webkit-font-smoothing:antialiased;
     caret-color:var(--accent); accent-color:var(--accent);
+  }
+
+  /* ---- capa ---------------------------------------------------------- */
+  /* A marca fica no alto como papel timbrado, não colada no título. Colada
+     ela vira kicker — o rótulo acima da manchete que o craft floor proíbe sem
+     exceção, porque o título carrega o próprio peso. */
+  .capa{min-height:100vh;display:flex;flex-direction:column;padding:26px 22px 32px}
+  .capa-topo{margin-bottom:auto}
+  .capa-dentro{max-width:520px;width:100%;margin:0 auto auto;padding-bottom:12vh}
+  .marca{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);
+         font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+         color:var(--accent)}
+  .marca .selo{margin:0}
+  .capa h1{font-size:34px;max-width:16ch;margin-bottom:18px}
+  .capa .lead{max-width:46ch}
+  .capa button{width:100%;margin-top:12px}
+
+  @media (min-width:641px){
+    .capa h1{font-size:40px}
   }
 
   /* ---- painel + régua ---------------------------------------------- */
@@ -79,6 +103,7 @@
   /* ---- tipografia --------------------------------------------------- */
   .etapa{font-family:var(--mono);font-size:12px;letter-spacing:.14em;
          color:var(--accent);text-transform:uppercase;margin:0 0 18px}
+  .marca-fim{color:var(--muted)}
   h1{font-size:27px;line-height:1.22;letter-spacing:-.02em;font-weight:600;
      margin:0 0 12px;max-width:22ch}
   h2{font-size:15px;margin:26px 0 10px;letter-spacing:-.01em;font-weight:600}
@@ -224,7 +249,25 @@
 </head>
 <body>
 
-<div class="painel">
+<div class="capa" id="capa">
+  <header class="capa-topo">
+    <span class="marca"><span class="selo" aria-hidden="true"></span> Radar de Vagas</span>
+  </header>
+
+  <div class="capa-dentro">
+    <h1>A vaga certa não aparece sozinha.</h1>
+    <p class="lead">Um robô varre os portais procurando o que se encaixa em você.
+      Mas antes dele, uma pessoa lê o seu currículo — porque é isso que decide o
+      que o robô vai procurar.</p>
+    <p class="lead">Este cadastro é o que separa os dois trabalhos. Ele calibra a
+      busca no seu nome.</p>
+    <button type="button" class="primary" onclick="abrirFormulario()">Começar o cadastro</button>
+    <p class="rodape" style="text-align:left;padding-top:16px">
+      11 etapas · 6 a 10 minutos · dá para pausar e voltar</p>
+  </div>
+</div>
+
+<div class="painel" id="painel" hidden>
   <nav class="regua" id="regua" aria-label="Etapas do cadastro"></nav>
 
   <div class="conteudo">
@@ -234,10 +277,6 @@
   <!-- 1 ─────────────────────────────────────────────── abertura -->
   <section class="step on" data-step="0">
     <h1 id="ola">Vamos calibrar a sua busca</h1>
-    <p class="lead">A partir daqui, um robô varre os portais de vaga procurando
-      o que se encaixa em você, e te manda só o que passa no filtro, com uma explicação
-      de por que passou.</p>
-
     <div class="card">
       <h2 style="margin-top:0">O que acontece depois que você enviar</h2>
       <p style="margin:0 0 10px"><b>1.</b> Eu leio suas respostas e monto o seu perfil de busca.</p>
@@ -924,15 +963,25 @@ function montarRegua(){
   });
 }
 
+function abrirFormulario(){
+  document.getElementById("capa").hidden = true;
+  document.getElementById("painel").hidden = false;
+  render();
+  window.scrollTo({top: 0, behavior: "instant"});
+}
+
 function render(){
   document.querySelectorAll(".step").forEach(s =>
     s.classList.toggle("on", +s.dataset.step === passo));
 
   const fim = passo === 11;
   document.getElementById("nav").style.display = fim ? "none" : "";
-  document.getElementById("etapa").textContent = fim
+  // "RV" no fim de cada linha funciona como assinatura de papel timbrado:
+  // a marca fica presente em toda tela sem ocupar uma linha própria.
+  document.getElementById("etapa").innerHTML = (fim
     ? "CADASTRO ENVIADO"
-    : `ETAPA ${String(passo + 1).padStart(2, "0")} / ${TOTAL} · ${ETAPAS[passo]}`;
+    : `ETAPA ${String(passo + 1).padStart(2, "0")} / ${TOTAL} · ${ETAPAS[passo]}`)
+    + ' <span class="marca-fim">· RV</span>';
 
   document.querySelectorAll("#regua .tick").forEach((t, i) => {
     if(i === passo) t.setAttribute("aria-current", "step");
@@ -1169,6 +1218,12 @@ listaEditavel("cargos_extra", D.cargos.adicionais);
 listaEditavel("dealbreakers", D.filtros.deal_breakers);
 listaEditavel("especialidades", D.filtros.especialidades);
 
+// Quem já respondeu alguma coisa volta direto para onde parou: a capa é
+// convite, e ninguém precisa ser convidado duas vezes.
+if(passo > 0 || (D.pessoa && D.pessoa.nome)){
+  document.getElementById("capa").hidden = true;
+  document.getElementById("painel").hidden = false;
+}
 render();
 </script>
 </body>
