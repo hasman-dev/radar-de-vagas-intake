@@ -119,6 +119,33 @@ vence o `[hidden]{display:none}` do navegador por especificidade, e o elemento
 segue na tela enquanto o JS jura que escondeu. Foi assim que a capa não sumia —
 e o botão do Telegram aparecia mesmo sem a Central ter confirmado o cadastro.
 
+### Logo e cartão de compartilhamento
+
+`assets/logo.svg` é a marca: escopo de radar com dois anéis, braço de varredura
+e o alvo fora do eixo. Traço fino, para conversar com a monoespaçada — é um
+instrumento, não um ícone de app. Ela usa `currentColor`, então herda a cor de
+onde estiver.
+
+`assets/og.png` é o que aparece quando o link é compartilhado. Três coisas nele
+não são opcionais:
+
+- **PNG, não SVG.** O WhatsApp não renderiza SVG em preview.
+- **URL absoluta** no `og:image`. O robô dele não resolve caminho relativo.
+- **1200×630 e abaixo de 600KB**, senão ele ignora a imagem e mostra só texto.
+
+Para regerar depois de editar o `og.svg`:
+
+```bash
+sips -s format png assets/og.svg --out assets/og.png
+```
+
+`sips` respeita a dimensão declarada no SVG. O `qlmanage` não serve aqui: força
+canvas quadrado e distorce a escala.
+
+**O WhatsApp guarda o preview em cache por semanas.** Depois de trocar a
+imagem, suba o `?v=` no `og:image` — e, para ver a mudança num link que você já
+mandou, compartilhe com um parâmetro diferente na URL.
+
 ### Verificação
 
 ```bash

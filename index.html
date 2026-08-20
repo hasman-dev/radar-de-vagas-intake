@@ -5,14 +5,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Radar de Vagas — Cadastro</title>
 <meta name="description" content="Cadastro do Radar de Vagas: as respostas aqui calibram a busca automática de vagas feita para você.">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='12' fill='none' stroke='%232c527a' stroke-width='3'/%3E%3Ccircle cx='16' cy='16' r='4' fill='%232c527a'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='12.6' fill='none' stroke='%232c527a' stroke-width='1.7'/%3E%3Ccircle cx='16' cy='16' r='6.2' fill='none' stroke='%232c527a' stroke-width='1.1' opacity='.38'/%3E%3Cpath d='M16 16 L24.7 7.6' stroke='%232c527a' stroke-width='1.7' stroke-linecap='round'/%3E%3Ccircle cx='22.1' cy='21.6' r='2.2' fill='%232c527a'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="https://hasman-dev.github.io/radar-de-vagas-intake/assets/logo-512.png">
 
+<!-- Cartão de compartilhamento. Sem og:image o WhatsApp mostra só texto, e o
+     link parece corrente. A imagem é PNG de propósito: o WhatsApp não
+     renderiza SVG. A URL é absoluta porque o robô dele não resolve caminho
+     relativo, e leva ?v= para forçar releitura — o preview fica em cache do
+     lado deles por semanas. -->
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="Radar de Vagas">
 <meta property="og:url" content="https://hasman-dev.github.io/radar-de-vagas-intake/">
-<meta property="og:title" content="Radar de Vagas — Cadastro">
-<meta property="og:description" content="As respostas aqui calibram a busca automática de vagas feita para você. Leva de 6 a 10 minutos.">
+<meta property="og:title" content="Radar de Vagas — cadastro">
+<meta property="og:description" content="Preencha para calibrar a busca de vagas no seu nome. 11 etapas, de 6 a 10 minutos, dá para pausar e voltar.">
+<meta property="og:image" content="https://hasman-dev.github.io/radar-de-vagas-intake/assets/og.png?v=1">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Radar de Vagas — a vaga certa não aparece sozinha.">
 <meta property="og:locale" content="pt_BR">
-<meta name="twitter:card" content="summary">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Radar de Vagas — cadastro">
+<meta name="twitter:description" content="Inteligência artificial e leitura de especialista trabalhando na sua recolocação.">
+<meta name="twitter:image" content="https://hasman-dev.github.io/radar-de-vagas-intake/assets/og.png?v=1">
 <meta name="color-scheme" content="light dark">
 <style>
   /* Radar de Vagas — "formulário como instrumento".
@@ -63,7 +78,7 @@
   .marca{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);
          font-size:12px;letter-spacing:.14em;text-transform:uppercase;
          color:var(--accent)}
-  .marca .selo{margin:0}
+  .marca .selo{margin:0;width:30px;height:30px}
   .capa h1{font-size:34px;max-width:16ch;margin-bottom:18px}
   .capa .lead{max-width:46ch}
   .capa button{width:100%;margin-top:12px}
@@ -82,10 +97,8 @@
     border-right:1px solid var(--line-soft);padding:22px 0;
     display:flex;flex-direction:column;align-items:center;gap:0;
   }
-  .selo{width:26px;height:26px;border-radius:50%;border:1.5px solid var(--accent);
-        display:grid;place-items:center;margin-bottom:20px;flex:none}
-  .selo::after{content:"";width:11px;height:1.5px;background:var(--accent);
-               transform:rotate(-45deg)}
+  .selo{width:26px;height:26px;color:var(--accent);margin-bottom:20px;flex:none;
+        display:block}
   .tick{appearance:none;border:0;background:none;padding:11px 0;cursor:pointer;
         display:flex;flex-direction:column;align-items:center;gap:5px;font-family:var(--mono)}
   .tick i{display:block;width:16px;height:1.5px;background:var(--line);transition:.18s}
@@ -225,7 +238,6 @@
             min-height:100vh}
     .regua{padding:16px 0}
     .selo{width:22px;height:22px;margin-bottom:14px}
-    .selo::after{width:9px}
     .tick{padding:9px 0}
     .tick i{width:13px}
     .tick[aria-current=step] i{width:18px}
@@ -251,7 +263,7 @@
 
 <div class="capa" id="capa">
   <header class="capa-topo">
-    <span class="marca"><span class="selo" aria-hidden="true"></span> Radar de Vagas</span>
+    <span class="marca"><svg class="selo" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="12.6" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="16" cy="16" r="6.2" fill="none" stroke="currentColor" stroke-width="1.1" opacity=".38"/><path d="M16 16 L24.7 7.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/><circle cx="22.1" cy="21.6" r="2.2" fill="currentColor"/></svg> Radar de Vagas</span>
   </header>
 
   <div class="capa-dentro">
@@ -952,7 +964,7 @@ const ETAPAS = ["INÍCIO", "IDENTIFICAÇÃO", "CURRÍCULO", "ALVO", "SENIORIDADE
 
 function montarRegua(){
   const el = document.getElementById("regua");
-  el.innerHTML = '<span class="selo" aria-hidden="true"></span>';
+  el.innerHTML = '<svg class="selo" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="12.6" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="16" cy="16" r="6.2" fill="none" stroke="currentColor" stroke-width="1.1" opacity=".38"/><path d="M16 16 L24.7 7.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" fill="none"/><circle cx="22.1" cy="21.6" r="2.2" fill="currentColor"/></svg>';
   ETAPAS.forEach((rotulo, i) => {
     const b = document.createElement("button");
     b.type = "button";
