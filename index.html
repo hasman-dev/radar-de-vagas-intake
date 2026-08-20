@@ -471,10 +471,7 @@ Não precisa formatar — só o texto já serve."></textarea></label>
     </div>
 
     <div class="card">
-      <div class="row">
-        <label class="f" style="margin-bottom:0"><span>Piso salarial <em>mensal, opcional</em></span>
-          <input type="text" id="salario" inputmode="numeric" placeholder="R$ 15.000"></label>
-        <label class="f" style="margin-bottom:0"><span>Seu inglês</span>
+      <label class="f" style="margin-bottom:0"><span>Seu inglês</span>
           <select id="ingles">
             <option value="">Selecione</option>
             <option value="nenhum">Não falo</option>
@@ -483,9 +480,8 @@ Não precisa formatar — só o texto já serve."></textarea></label>
             <option value="avancado">Avançado</option>
             <option value="fluente">Fluente</option>
           </select></label>
-      </div>
-      <p class="hint">Vaga que exige fluência acima do seu nível entra marcada, não descartada —
-        você decide se vale tentar.</p>
+      <p class="hint">Vaga que exige fluência acima do seu nível entra marcada, não
+        descartada: você decide se vale tentar.</p>
     </div>
 
     <div class="card">
@@ -1126,7 +1122,6 @@ liga("mov_de",   () => D.movimento.de,   v => D.movimento.de = v);
 liga("mov_para", () => D.movimento.para, v => D.movimento.para = v);
 liga("mov_obs",  () => D.movimento.observacao, v => D.movimento.observacao = v);
 
-liga("salario", () => D.filtros.salario_minimo, v => D.filtros.salario_minimo = v);
 liga("ingles",  () => D.filtros.ingles,         v => D.filtros.ingles = v);
 
 document.getElementById("cv_whats").checked = !!D.cv.envia_por_whatsapp;

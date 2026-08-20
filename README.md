@@ -66,7 +66,7 @@ tão boa quanto aceitar.
 | 6 | Modalidade e local | Abrangência **por modalidade** — remoto e presencial quase nunca têm o mesmo alcance |
 | 7 | Empresas-alvo, segmentos e porte | Bônus por empresa; vocabulário de segmento alcança empresa que o cliente não conhece |
 | 8 | Empresas a evitar e deal-breakers | Exclusão dura: palavra no título descarta a vaga |
-| 9 | Regime, salário, inglês, especialidades, cadência | Especialidade marca a coluna filtrável do tracker |
+| 9 | Regime, inglês, especialidades, cadência | Especialidade marca a coluna filtrável do tracker |
 | 10 | Consentimento e envio | LGPD |
 
 ---
