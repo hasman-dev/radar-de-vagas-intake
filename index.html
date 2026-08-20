@@ -180,6 +180,8 @@
     text-decoration:none;display:block}
   .acts-final a{padding:13px 22px;border-radius:6px;border:1px solid var(--line-soft);
                 color:var(--ink);font-weight:600;font-size:15px}
+  .acts-final a.primary{background:var(--accent);border-color:var(--accent);
+                        color:var(--acc-text)}
 
   .step{display:none}
   .step.on{display:block;animation:entra .28s cubic-bezier(.2,.7,.3,1)}
@@ -253,8 +255,9 @@
   <!-- 2 ─────────────────────────────────────────────── quem é você -->
   <section class="step" data-step="1">
     <h1>Quem é você</h1>
-    <p class="lead">O WhatsApp é por onde as vagas chegam. O LinkedIn é de onde eu tiro
-      o contexto que o currículo não conta.</p>
+    <p class="lead">As vagas chegam pelo Telegram, que você ativa no fim. O WhatsApp
+      é por onde eu falo com você. O LinkedIn é de onde eu tiro o contexto que o
+      currículo não conta.</p>
 
     <div class="card">
       <label class="f"><span>Nome completo</span>
@@ -294,8 +297,8 @@
 Não precisa formatar — só o texto já serve."></textarea></label>
       <label class="opt" style="margin-bottom:0">
         <input type="checkbox" id="cv_whats">
-        <span><b>Prefiro mandar o PDF no WhatsApp</b>
-          <small>Você recebe o número na tela final.</small></span></label>
+        <span><b>Prefiro enviar o PDF depois</b>
+          <small>Você recebe o endereço na tela final.</small></span></label>
     </div>
 
     <h2>Seus dois últimos empregos</h2>
@@ -535,13 +538,12 @@ Não precisa formatar — só o texto já serve."></textarea></label>
   <!-- 12 ────────────────────────────────────────────── fim -->
   <section class="step" data-step="11">
     <div class="done">
-      <div class="big">📡</div>
       <h1 id="fim_titulo">Recebido</h1>
       <p class="lead" id="fim_texto">Seu radar entra no ar na próxima rodada.</p>
       <div class="proto" id="protocolo"></div>
       <div class="note ok" style="text-align:left">
-        <b>Próximo passo:</b> <span id="fim_passo">me chame no WhatsApp para eu confirmar o
-        recebimento e combinar o canal onde as vagas vão chegar.</span>
+        <b>Próximo passo:</b> <span id="fim_passo">eu leio o seu cadastro e volto com
+        os três cargos para você aceitar ou recusar.</span>
       </div>
       <div class="note" id="box_telegram" style="text-align:left" hidden>
         <b>Ative o seu radar no Telegram.</b> É por lá que as vagas chegam, com os
@@ -550,10 +552,9 @@ Não precisa formatar — só o texto já serve."></textarea></label>
       </div>
 
       <div class="acts-final">
-        <a id="link_telegram" href="#" target="_blank" rel="noopener" hidden
-           style="background:var(--accent);border-color:var(--accent);color:var(--accent-fg)">
+        <a id="link_telegram" class="primary" href="#" target="_blank" rel="noopener" hidden>
           Ativar no Telegram</a>
-        <a id="link_whats" href="#" target="_blank" rel="noopener">Falar no WhatsApp</a>
+        <a id="link_email" href="#">Enviar por e-mail</a>
         <button type="button" onclick="baixarJSON()">Baixar minhas respostas (JSON)</button>
       </div>
     </div>
@@ -579,14 +580,16 @@ Não precisa formatar — só o texto já serve."></textarea></label>
    CHAVE     a mesma senha que está no topo do intake-apps-script.gs.
              Ela fica visível no código-fonte desta página — é anti-robô, não
              é autenticação. O que protege é o endpoint não devolver nada.
-   WHATSAPP  número que aparece no fim, formato internacional só com dígitos.
+   EMAIL     contato de recuperação, para quando a Central não confirmar o
+             cadastro. É conta do produto, não telefone pessoal: a página é
+             pública e fica indexada.
    BOT       usuário do bot no Telegram, sem @. É o que monta o link de
              ativação — o cliente toca, manda /start com o próprio protocolo,
              e a Central grava o chat_id dele sozinha.                        */
 const CONFIG = {
   ENDPOINT: "https://script.google.com/macros/s/AKfycbzzRcabffMLzOHSnIhNk3E8ncE2iWou8yqpMTQMqBRjBJt6ZQO4TAxQAgX5cahO0rus/exec",
   CHAVE: "aoSjhhTNCBBTm6Vu5GtLDRbkhG6U4zSK",
-  WHATSAPP: "5511971388018",
+  EMAIL: "hasman.corp.development@gmail.com",
   OPERADOR: "Ramon",
   BOT: "radar_vagas_v1_hasmancorp_bot"
 };
@@ -840,13 +843,13 @@ function valida(p){
     if(!(D.pessoa.nome || "").trim()) return erro("e1", "Escreva seu nome.");
     if(!/^\S+@\S+\.\S+$/.test(D.pessoa.email || "")) return erro("e1", "E-mail parece incompleto.");
     if(((D.pessoa.whatsapp || "").replace(/\D/g, "")).length < 10)
-      return erro("e1", "WhatsApp com DDD, por favor — é por ele que as vagas chegam.");
+      return erro("e1", "WhatsApp com DDD, por favor: é por ele que eu falo com você.");
     if(!D.pessoa.situacao) return erro("e1", "Escolha como está sua situação hoje.");
     return erro("e1", "");
   }
   if(p === 2){
     if(!(D.cv.texto || "").trim() && !D.cv.envia_por_whatsapp)
-      return erro("e2", "Cole o currículo ou marque que vai enviar o PDF pelo WhatsApp.");
+      return erro("e2", "Cole o currículo ou marque que vai enviar o PDF depois.");
     if(!(D.cv.emprego_1.cargo || "").trim())
       return erro("e2", "O cargo do emprego mais recente é o que mais pesa na análise.");
     return erro("e2", "");
@@ -1036,24 +1039,26 @@ async function enviar(){
     document.getElementById("fim_texto").textContent =
       "Falta só me entregar as respostas — é o passo abaixo.";
     document.getElementById("fim_passo").textContent =
-      "baixe o arquivo abaixo e me mande no WhatsApp" +
+      "baixe o arquivo abaixo e me envie por e-mail" +
       (D.cv.envia_por_whatsapp ? ", junto com o seu currículo em PDF." : ".");
   }else if(!confirmado){
     document.getElementById("fim_titulo").textContent = "Quase lá";
     document.getElementById("fim_texto").textContent =
-      "Não consegui confirmar o envio automático. Baixe suas respostas e me mande no " +
-      "WhatsApp — leva dez segundos e nada se perde.";
+      "Não consegui confirmar o envio automático. Baixe suas respostas e me envie " +
+      "por e-mail: leva dez segundos e nada se perde.";
     document.getElementById("fim_passo").textContent =
-      "baixe o arquivo abaixo e envie no WhatsApp junto com o seu currículo em PDF.";
+      "baixe o arquivo abaixo e envie por e-mail, junto com o seu currículo em PDF.";
   }else if(D.cv.envia_por_whatsapp){
     document.getElementById("fim_passo").textContent =
-      "me envie o seu currículo em PDF no WhatsApp — é o que falta para eu montar o perfil.";
+      "me envie o seu currículo em PDF por e-mail: é o que falta para eu montar o perfil.";
   }
 
-  const msg = `Olá ${CONFIG.OPERADOR}! Terminei o cadastro do Radar de Vagas.\n` +
-              `Protocolo: ${payload.protocolo}\nNome: ${payload.pessoa.nome}`;
-  document.getElementById("link_whats").href =
-    `https://wa.me/${CONFIG.WHATSAPP}?text=${encodeURIComponent(msg)}`;
+  const assunto = `Radar de Vagas — cadastro ${payload.protocolo}`;
+  const corpo = `Olá ${CONFIG.OPERADOR}! Terminei o cadastro do Radar de Vagas.\n\n` +
+                `Protocolo: ${payload.protocolo}\nNome: ${payload.pessoa.nome}\n\n` +
+                `(anexe aqui o arquivo que você baixou, e o seu currículo em PDF)`;
+  document.getElementById("link_email").href =
+    `mailto:${CONFIG.EMAIL}?subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(corpo)}`;
 
   // Deep link do Telegram: o /start chega no bot com o protocolo como payload,
   // e a Central grava o chat_id sozinha. É o que substitui o passo manual de
@@ -1069,7 +1074,7 @@ async function enviar(){
     document.getElementById("box_telegram").hidden = false;
     document.getElementById("fim_passo").textContent =
       "toque em Ativar no Telegram aqui embaixo. É o último passo." +
-      (D.cv.envia_por_whatsapp ? " Depois me mande o currículo em PDF no WhatsApp." : "");
+      (D.cv.envia_por_whatsapp ? " Depois me mande o currículo em PDF por e-mail." : "");
   }
 
   passo = 11; render();

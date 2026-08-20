@@ -17,13 +17,17 @@ No topo do `<script>` em `index.html`:
 const CONFIG = {
   ENDPOINT: "",              // URL /exec do Apps Script da Central de Cadastros
   CHAVE:    "",              // a mesma senha do topo do intake-apps-script.gs
-  WHATSAPP: "5511999999999", // só dígitos, formato internacional (exemplo)
+  EMAIL:    "voce@dominio.com", // contato de recuperação; NÃO use telefone pessoal
   OPERADOR: "Ramon"
 };
 ```
 
 Com `ENDPOINT` vazio o formulário funciona igual e termina no download do JSON
 — útil para testar antes de publicar o endpoint.
+
+**Nada de telefone pessoal aqui.** A página é pública e fica indexada; o
+caminho de recuperação — para quando a Central não confirma o cadastro — usa o
+e-mail do produto, não o seu número.
 
 `CHAVE` fica visível no código-fonte desta página. Ela não é autenticação: serve
 para barrar robô que varre URLs de Apps Script no escuro. O que protege de
